@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "75284633796",
+    "project_id": "steps-app-2fb26",
+    "storage_bucket": "steps-app-2fb26.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:75284633796:android:e44c9243f15cbb95749191",
+        "android_client_info": {
+          "package_name": "com.wesdok.steps_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "75284633796-u5nneqsd1k0dfpl7qm9nudnggt31ab93.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFtfEG152wn8_905YWjeogiVSnvS82mjs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "75284633796-u5nneqsd1k0dfpl7qm9nudnggt31ab93.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
