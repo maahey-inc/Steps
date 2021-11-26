@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:steps_app/Provider/home_provider.dart';
 import 'package:steps_app/Screens/BookScreen.dart';
 import 'package:steps_app/Widgets/Button.dart';
+import 'package:steps_app/Widgets/LineChart.dart';
+import 'package:steps_app/Widgets/ReadLineChart.dart';
 
 import '../theme.dart';
 
@@ -15,21 +17,16 @@ class Readmainscreen extends StatefulWidget {
 }
 
 class _ReadmainscreenState extends State<Readmainscreen> {
-  var hoursDay;
-  var hoursWeek;
-  var hoursMonth;
+  var pagesDay;
+  var pagesWeek;
+  var pagesMonth;
 
-  var minutesDay;
-  var minutesWeek;
-  var minutesMonth;
-
-  var secondsDay;
-  var secondsWeek;
-  var secondsMonth;
-
-  var hours;
-  var minutes;
-  var seconds;
+  var hours = "0";
+  var minutes = "0";
+  var seconds = "0";
+  var pages = "0";
+  var totalTime = "0";
+  var totalPages = "0";
 
   bool isDay = false;
   bool isWeek = false;
@@ -44,6 +41,9 @@ class _ReadmainscreenState extends State<Readmainscreen> {
   var readTimeDay;
   var readTimeWeek;
   var readTimeMonth;
+  var readPagesDay;
+  var readPagesWeek;
+  var readPagesMonth;
   var readStartDateDay;
   var readEndDateDay;
   var readStartDateWeek;
@@ -51,6 +51,64 @@ class _ReadmainscreenState extends State<Readmainscreen> {
   var readStartDateMonth;
   var readEndDateMonth;
   var readTotalTime;
+  var readTotalPages;
+  var readUid;
+
+  var mondaySteps;
+  var mondayReadTime;
+  var mondayStartDateDay;
+  var mondayEndDateDay;
+  var mondayStartDateWeek;
+  var mondayEndDateWeek;
+  var mondayUid;
+
+  var tuesdaySteps;
+  var tuesdayReadTime;
+  var tuesdayStartDateDay;
+  var tuesdayEndDateDay;
+  var tuesdayStartDateWeek;
+  var tuesdayEndDateWeek;
+  var tuesdayUid;
+
+  var wednesdaySteps;
+  var wednesdayReadTime;
+  var wednesdayStartDateDay;
+  var wednesdayEndDateDay;
+  var wednesdayStartDateWeek;
+  var wednesdayEndDateWeek;
+  var wednesdayUid;
+
+  var thursdaySteps;
+  var thursdayReadTime;
+  var thursdayStartDateDay;
+  var thursdayEndDateDay;
+  var thursdayStartDateWeek;
+  var thursdayEndDateWeek;
+  var thursdayUid;
+
+  var fridaySteps;
+  var fridayReadTime;
+  var fridayStartDateDay;
+  var fridayEndDateDay;
+  var fridayStartDateWeek;
+  var fridayEndDateWeek;
+  var fridayUid;
+
+  var saturdaySteps;
+  var saturdayReadTime;
+  var saturdayStartDateDay;
+  var saturdayEndDateDay;
+  var saturdayStartDateWeek;
+  var saturdayEndDateWeek;
+  var saturdayUid;
+
+  var sundaySteps;
+  var sundayReadTime;
+  var sundayStartDateDay;
+  var sundayEndDateDay;
+  var sundayStartDateWeek;
+  var sundayEndDateWeek;
+  var sundayUid;
 
   int fetchedSplittedHoursDay;
   int fetchedSplittedMinutesDay;
@@ -64,11 +122,182 @@ class _ReadmainscreenState extends State<Readmainscreen> {
   int fetchedSplittedMinutesMonth;
   int fetchedSplittedSecondsMonth;
 
+  int fetchedSplittedHoursTotalTime;
+  int fetchedSplittedMinutesTotalTime;
+  int fetchedSplittedSecondsTotalTime;
+
+  int fetchedSplittedHoursMondayReadTime;
+  int fetchedSplittedMinutesMondayReadTime;
+  int fetchedSplittedSecondsMondayReadTime;
+
+  int fetchedSplittedHoursTuesdayReadTime;
+  int fetchedSplittedMinutesTuesdayReadTime;
+  int fetchedSplittedSecondsTuesdayReadTime;
+
+  int fetchedSplittedHoursWednesdayReadTime;
+  int fetchedSplittedMinutesWednesdayReadTime;
+  int fetchedSplittedSecondsWednesdayReadTime;
+
+  int fetchedSplittedHoursThursdayReadTime;
+  int fetchedSplittedMinutesThursdayReadTime;
+  int fetchedSplittedSecondsThursdayReadTime;
+
+  int fetchedSplittedHoursFridayReadTime;
+  int fetchedSplittedMinutesFridayReadTime;
+  int fetchedSplittedSecondsFridayReadTime;
+
+  int fetchedSplittedHoursSaturdayReadTime;
+  int fetchedSplittedMinutesSaturdayReadTime;
+  int fetchedSplittedSecondsSaturdayReadTime;
+
+  int fetchedSplittedHoursSundayReadTime;
+  int fetchedSplittedMinutesSundayReadTime;
+  int fetchedSplittedSecondsSundayReadTime;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("${Provider.of<Homeprovider>(context, listen: false).readTimeValue}");
+    fetchData();
+    sendDataToFirebase();
+    fetchDataFirebase();
+    // print("${Provider.of<Homeprovider>(context, listen: false).readTimeValue}");
+  }
+
+  Future sendDataToFirebase() async {
+    //! Spliiting Data fetched from Firebase
+    // if (readUid != null) {
+    //   splitReadTimeData();
+    // }
+
+    //! Display default date Only
+    // DateTime.now().toIso8601String().split('T').first
+    //! For Day
+    // DateTime startDateDay = DateTime.now().subtract(Duration(days: 1));
+    // DateTime endDateDay = DateTime.now();
+    DateTime _firstDateOfTheDay =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    DateTime _lastDateOfTheDay = DateTime(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
+    var startDateDay = _firstDateOfTheDay.toIso8601String().split('T').first;
+    var endDateDay = _lastDateOfTheDay.toIso8601String().split('T').first;
+    print("Today start Date:       " + _firstDateOfTheDay.toString());
+    print("Today end Date:       " + _lastDateOfTheDay.toString());
+
+    //! For Week
+    DateTime _firstDateOfTheweek =
+        DateTime.now().subtract(new Duration(days: DateTime.now().weekday - 1));
+    DateTime _lastDateOfWeek = _firstDateOfTheweek.add(new Duration(days: 6));
+    var startDateWeek = _firstDateOfTheweek.toIso8601String().split('T').first;
+    var endDateWeek = _lastDateOfWeek.toIso8601String().split('T').first;
+    print("Week start Date:       " + _firstDateOfTheweek.toString());
+    print("Week end Date:       " + _lastDateOfWeek.toString());
+
+    //! For Month
+    DateTime _firstDateOfMonth =
+        new DateTime(DateTime.now().year, DateTime.now().month, 1);
+    DateTime _lastDateOfMonth =
+        DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
+    var startDateMonth = _firstDateOfMonth.toIso8601String().split('T').first;
+    var endDateMonth = _lastDateOfMonth.toIso8601String().split('T').first;
+    print("Month start Date:       " + _firstDateOfMonth.toString());
+    print("Month end Date:       " + _lastDateOfMonth.toString());
+
+    //! Send data to Firebase
+    // ignore: missing_return
+    final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+    await _fireStore.collection("ReadData").get().then((querySnapshot) async {
+      //* Check if Collection / Table exists or not
+      //just add this line
+
+      if (querySnapshot.docs.isEmpty) {
+        CircularProgressIndicator();
+      } else {
+        if (querySnapshot.docs.isNotEmpty) {
+          //* If table exists but Uid/User not exists.
+          for (var result in querySnapshot.docs) {
+            if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+              //! Logic Of endDateDay before updating...
+              if (readEndDateDay == null) {
+                // Do Nothing...
+              } else {
+                if (endDateDay.compareTo(readEndDateDay) == 0) {
+                } else {
+                  // print('false');
+                  //* Check if Today's end date is not same as firebase Today's end date only then update new date
+                  //* Because now it is a new day. So, reset read time and update new end date
+                  await FirebaseFirestore.instance
+                      .collection("ReadData")
+                      .doc(FirebaseAuth.instance.currentUser.uid)
+                      .update({
+                    "ReadTimeDay": "00:00:00",
+                    "ReadStartDateDay": startDateDay,
+                    "ReadEndDateDay": endDateDay,
+                    "ReadPagesDay": "0",
+                  }).then((value) {
+                    // //* Show success pop up dialog
+                    // print("Book read time updated successfully.");
+                  });
+                }
+              }
+              //! Logic Of endDateWeek before updating...
+              if (readEndDateWeek == null) {
+                // Do Nothing...
+              } else {
+                if (endDateWeek.compareTo(readEndDateWeek) == 0) {
+                } else {
+                  // print('false');
+                  //* Check if Week end date is not same as firebase Week end date only then update new date
+                  //* Because now it is a new Week. So, reset read time and update new end date
+                  await FirebaseFirestore.instance
+                      .collection("ReadData")
+                      .doc(FirebaseAuth.instance.currentUser.uid)
+                      .update({
+                    "ReadTimeWeek": "00:00:00",
+                    "ReadStartDateWeek": startDateWeek,
+                    "ReadEndDateWeek": endDateWeek,
+                    "ReadPagesWeek": "0",
+                  }).then((value) {
+                    // //* Show success pop up dialog
+                    // print("Book read time updated successfully.");
+                  });
+                }
+              }
+              //! Logic Of endDateMonth before updating...
+              if (readEndDateMonth == null) {
+                // Do Nothing...
+              } else {
+                if (endDateMonth.compareTo(readEndDateMonth) == 0) {
+                } else {
+                  // print('false');
+                  //* Check if Month end date is not same as firebase Month end date only then update new date
+                  //* Because now it is a new Month. So, reset read time and update new end date
+                  await FirebaseFirestore.instance
+                      .collection("ReadData")
+                      .doc(FirebaseAuth.instance.currentUser.uid)
+                      .update({
+                    "ReadTimeMonth": "00:00:00",
+                    "ReadStartDateMonth": startDateMonth,
+                    "ReadEndDateMonth": endDateMonth,
+                    "ReadPagesMonth": "0",
+                  }).then((value) {
+                    // //* Show success pop up dialog
+                    // print("Book read time updated successfully.");
+                  });
+                }
+              }
+            }
+          }
+          // setState(() {});
+        }
+      }
+    });
+    fetchDataFromFirebase();
+    if (mounted) {
+      setState(() {});
+    }
+    //! Spliiting Data fetched from Firebase
+    // splitReadTimeData();
   }
 
   // ignore: missing_return
@@ -77,81 +306,380 @@ class _ReadmainscreenState extends State<Readmainscreen> {
     await _fireStore.collection("ReadData").get().then((querySnapshot) {
       for (var result in querySnapshot.docs) {
         if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-          readTimeDay = result.data()['ReadTimeDay'];
-          readTimeWeek = result.data()['ReadTimeWeek'];
-          readTimeMonth = result.data()['ReadTimeMonth'];
-          readStartDateDay = result.data()['ReadStartDateDay'];
-          readEndDateDay = result.data()['ReadEndDateDay'];
-          readStartDateWeek = result.data()['ReadStartDateWeek'];
-          readEndDateWeek = result.data()['ReadEndDateWeek'];
-          readStartDateMonth = result.data()['ReadStartDateMonth'];
-          readEndDateMonth = result.data()['ReadEndDateMonth'];
-          readTotalTime = result.data()['ReadTotalTime'];
+          if (mounted) {
+            setState(() {
+              readTimeDay = result.data()['ReadTimeDay'];
+              readTimeWeek = result.data()['ReadTimeWeek'];
+              readTimeMonth = result.data()['ReadTimeMonth'];
+              readPagesDay = result.data()['ReadPagesDay'];
+              readPagesWeek = result.data()['ReadPagesWeek'];
+              readPagesMonth = result.data()['ReadPagesMonth'];
+              readStartDateDay = result.data()['ReadStartDateDay'];
+              readEndDateDay = result.data()['ReadEndDateDay'];
+              readStartDateWeek = result.data()['ReadStartDateWeek'];
+              readEndDateWeek = result.data()['ReadEndDateWeek'];
+              readStartDateMonth = result.data()['ReadStartDateMonth'];
+              readEndDateMonth = result.data()['ReadEndDateMonth'];
+              readTotalTime = result.data()['ReadTotalTime'];
+              readTotalPages = result.data()['ReadTotalPages'];
+              readUid = result.data()['Uid'];
+            });
+          }
         }
-        setState(() {});
       }
     });
   }
 
+  // ignore: missing_return
+  Future<DocumentSnapshot> fetchWeekDataFromFirebase() async {
+    final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+    if (mounted) {
+      await _fireStore.collection("MondayData").get().then((querySnapshot) {
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            setState(() {
+              mondaySteps = result.data()['Steps'];
+              mondayReadTime = result.data()['ReadTime'];
+              mondayStartDateDay = result.data()['StartDateDay'];
+              mondayEndDateDay = result.data()['EndDateDay'];
+              mondayStartDateWeek = result.data()['StartDateWeek'];
+              mondayEndDateWeek = result.data()['EndDateWeek'];
+              mondayUid = result.data()['Uid'];
+            });
+          }
+        }
+      });
+      await _fireStore.collection("TuesdayData").get().then((querySnapshot) {
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            setState(() {
+              tuesdaySteps = result.data()['Steps'];
+              tuesdayReadTime = result.data()['ReadTime'];
+              tuesdayStartDateDay = result.data()['StartDateDay'];
+              tuesdayEndDateDay = result.data()['EndDateDay'];
+              tuesdayStartDateWeek = result.data()['StartDateWeek'];
+              tuesdayEndDateWeek = result.data()['EndDateWeek'];
+              tuesdayUid = result.data()['Uid'];
+            });
+          }
+        }
+      });
+      await _fireStore.collection("WednesdayData").get().then((querySnapshot) {
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            setState(() {
+              wednesdaySteps = result.data()['Steps'];
+              wednesdayReadTime = result.data()['ReadTime'];
+              wednesdayStartDateDay = result.data()['StartDateDay'];
+              wednesdayEndDateDay = result.data()['EndDateDay'];
+              wednesdayStartDateWeek = result.data()['StartDateWeek'];
+              wednesdayEndDateWeek = result.data()['EndDateWeek'];
+              wednesdayUid = result.data()['Uid'];
+            });
+          }
+        }
+      });
+      await _fireStore.collection("ThursdayData").get().then((querySnapshot) {
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            setState(() {
+              thursdaySteps = result.data()['Steps'];
+              thursdayReadTime = result.data()['ReadTime'];
+              thursdayStartDateDay = result.data()['StartDateDay'];
+              thursdayEndDateDay = result.data()['EndDateDay'];
+              thursdayStartDateWeek = result.data()['StartDateWeek'];
+              thursdayEndDateWeek = result.data()['EndDateWeek'];
+              thursdayUid = result.data()['Uid'];
+            });
+          }
+        }
+      });
+      await _fireStore.collection("FridayData").get().then((querySnapshot) {
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            setState(() {
+              fridaySteps = result.data()['Steps'];
+              fridayReadTime = result.data()['ReadTime'];
+              fridayStartDateDay = result.data()['StartDateDay'];
+              fridayEndDateDay = result.data()['EndDateDay'];
+              fridayStartDateWeek = result.data()['StartDateWeek'];
+              fridayEndDateWeek = result.data()['EndDateWeek'];
+              fridayUid = result.data()['Uid'];
+            });
+          }
+        }
+      });
+      await _fireStore.collection("SaturdayData").get().then((querySnapshot) {
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            setState(() {
+              saturdaySteps = result.data()['Steps'];
+              saturdayReadTime = result.data()['ReadTime'];
+              saturdayStartDateDay = result.data()['StartDateDay'];
+              saturdayEndDateDay = result.data()['EndDateDay'];
+              saturdayStartDateWeek = result.data()['StartDateWeek'];
+              saturdayEndDateWeek = result.data()['EndDateWeek'];
+              saturdayUid = result.data()['Uid'];
+            });
+          }
+        }
+      });
+      await _fireStore.collection("SundayData").get().then((querySnapshot) {
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            setState(() {
+              sundaySteps = result.data()['Steps'];
+              sundayReadTime = result.data()['ReadTime'];
+              sundayStartDateDay = result.data()['StartDateDay'];
+              sundayEndDateDay = result.data()['EndDateDay'];
+              sundayStartDateWeek = result.data()['StartDateWeek'];
+              sundayEndDateWeek = result.data()['EndDateWeek'];
+              sundayUid = result.data()['Uid'];
+            });
+          }
+        }
+      });
+
+      //! Splitting String by :
+      List<String> splittedMondayReadTime = mondayReadTime.split(':');
+      fetchedSplittedHoursMondayReadTime = int.parse(splittedMondayReadTime[0]);
+      fetchedSplittedMinutesMondayReadTime =
+          int.parse(splittedMondayReadTime[1]);
+      fetchedSplittedSecondsMondayReadTime =
+          int.parse(splittedMondayReadTime[2]);
+
+      //! Splitting String by :
+      List<String> splittedTuesdayReadTime = tuesdayReadTime.split(':');
+      fetchedSplittedHoursTuesdayReadTime =
+          int.parse(splittedTuesdayReadTime[0]);
+      fetchedSplittedMinutesTuesdayReadTime =
+          int.parse(splittedTuesdayReadTime[1]);
+      fetchedSplittedSecondsTuesdayReadTime =
+          int.parse(splittedTuesdayReadTime[2]);
+
+      //! Splitting String by :
+      List<String> splittedWednessdayReadTime = wednesdayReadTime.split(':');
+      fetchedSplittedHoursWednesdayReadTime =
+          int.parse(splittedWednessdayReadTime[0]);
+      fetchedSplittedMinutesWednesdayReadTime =
+          int.parse(splittedWednessdayReadTime[1]);
+      fetchedSplittedSecondsWednesdayReadTime =
+          int.parse(splittedWednessdayReadTime[2]);
+
+      //! Splitting String by :
+      List<String> splittedThursdayReadTime = thursdayReadTime.split(':');
+      fetchedSplittedHoursThursdayReadTime =
+          int.parse(splittedThursdayReadTime[0]);
+      fetchedSplittedMinutesThursdayReadTime =
+          int.parse(splittedThursdayReadTime[1]);
+      fetchedSplittedSecondsThursdayReadTime =
+          int.parse(splittedThursdayReadTime[2]);
+
+      //! Splitting String by :
+      List<String> splittedFridayReadTime = fridayReadTime.split(':');
+      fetchedSplittedHoursFridayReadTime = int.parse(splittedFridayReadTime[0]);
+      fetchedSplittedMinutesFridayReadTime =
+          int.parse(splittedFridayReadTime[1]);
+      fetchedSplittedSecondsFridayReadTime =
+          int.parse(splittedFridayReadTime[2]);
+
+      //! Splitting String by :
+      List<String> splittedSaturdayReadTime = saturdayReadTime.split(':');
+      fetchedSplittedHoursSaturdayReadTime =
+          int.parse(splittedSaturdayReadTime[0]);
+      fetchedSplittedMinutesSaturdayReadTime =
+          int.parse(splittedSaturdayReadTime[1]);
+      fetchedSplittedSecondsSaturdayReadTime =
+          int.parse(splittedSaturdayReadTime[2]);
+
+      //! Splitting String by :
+      List<String> splittedSundayReadTime = sundayReadTime.split(':');
+      fetchedSplittedHoursSundayReadTime = int.parse(splittedSundayReadTime[0]);
+      fetchedSplittedMinutesSundayReadTime =
+          int.parse(splittedSundayReadTime[1]);
+      fetchedSplittedSecondsSundayReadTime =
+          int.parse(splittedSundayReadTime[2]);
+
+      //! Logic to display in minutes: Hours * 60 + Minutes = Total Minutes
+      double totalMinutesMonday = (fetchedSplittedHoursMondayReadTime * 60 +
+              fetchedSplittedMinutesMondayReadTime)
+          .toDouble();
+      Provider.of<Homeprovider>(context, listen: false)
+          .mondayReadMinutesValue(totalMinutesMonday);
+      print("TotalMinutesMonday        " + totalMinutesMonday.toString());
+      double totalMinutesTuesday = (fetchedSplittedHoursTuesdayReadTime * 60 +
+              fetchedSplittedMinutesTuesdayReadTime)
+          .toDouble();
+      Provider.of<Homeprovider>(context, listen: false)
+          .tuesdayReadMinutesValue(totalMinutesTuesday);
+      double totalMinutesWednesday =
+          (fetchedSplittedHoursWednesdayReadTime * 60 +
+                  fetchedSplittedMinutesWednesdayReadTime)
+              .toDouble();
+      Provider.of<Homeprovider>(context, listen: false)
+          .wednesdayReadMinutesValue(totalMinutesWednesday);
+      double totalMinutesThursday = (fetchedSplittedHoursThursdayReadTime * 60 +
+              fetchedSplittedMinutesThursdayReadTime)
+          .toDouble();
+      Provider.of<Homeprovider>(context, listen: false)
+          .thursdayReadMinutesValue(totalMinutesThursday);
+      double totalMinutesFriday = (fetchedSplittedHoursFridayReadTime * 60 +
+              fetchedSplittedMinutesFridayReadTime)
+          .toDouble();
+      Provider.of<Homeprovider>(context, listen: false)
+          .fridayReadMinutesValue(totalMinutesFriday);
+      double totalMinutesSaturday = (fetchedSplittedHoursSaturdayReadTime * 60 +
+              fetchedSplittedMinutesSaturdayReadTime)
+          .toDouble();
+      Provider.of<Homeprovider>(context, listen: false)
+          .saturdayReadMinutesValue(totalMinutesSaturday);
+      double totalMinutesSunday = (fetchedSplittedHoursSundayReadTime * 60 +
+              fetchedSplittedMinutesSundayReadTime)
+          .toDouble();
+      Provider.of<Homeprovider>(context, listen: false)
+          .sundayReadMinutesValue(totalMinutesSunday);
+      setState(() {});
+    }
+  }
+
   splitReadTimeData() {
-    //! Splitting currentScores String by :
+    // print("HELLOOOO from the Other World!!!! ");
+    //! Splitting String by :
     List<String> fetchedSplittedReadTimeDay = readTimeDay.split(':');
     fetchedSplittedHoursDay = int.parse(fetchedSplittedReadTimeDay[0]);
     fetchedSplittedMinutesDay = int.parse(fetchedSplittedReadTimeDay[1]);
-    fetchedSplittedSecondsDay = int.parse(fetchedSplittedReadTimeDay[1]);
+    fetchedSplittedSecondsDay = int.parse(fetchedSplittedReadTimeDay[2]);
+    // print("fetchedSplittedHoursDay:     " + fetchedSplittedHoursDay.toString());
+    // print("fetchedSplittedMinutesDay:     " +
+    //     fetchedSplittedMinutesDay.toString());
+    // print("fetchedSplittedSecondsDay:     " +
+    //     fetchedSplittedSecondsDay.toString());
 
-    //! Splitting currentScores String by :
+    //! Splitting String by :
     List<String> fetchedSplittedReadTimeWeek = readTimeWeek.split(':');
     fetchedSplittedHoursWeek = int.parse(fetchedSplittedReadTimeWeek[0]);
     fetchedSplittedMinutesWeek = int.parse(fetchedSplittedReadTimeWeek[1]);
-    fetchedSplittedSecondsWeek = int.parse(fetchedSplittedReadTimeWeek[1]);
+    fetchedSplittedSecondsWeek = int.parse(fetchedSplittedReadTimeWeek[2]);
 
-    //! Splitting currentScores String by :
+    //! Splitting String by :
     List<String> fetchedSplittedReadTimeMonth = readTimeMonth.split(':');
     fetchedSplittedHoursMonth = int.parse(fetchedSplittedReadTimeMonth[0]);
     fetchedSplittedMinutesMonth = int.parse(fetchedSplittedReadTimeMonth[1]);
-    fetchedSplittedSecondsMonth = int.parse(fetchedSplittedReadTimeMonth[1]);
+    fetchedSplittedSecondsMonth = int.parse(fetchedSplittedReadTimeMonth[2]);
+
+    //! Splitting String by :
+    List<String> fetchedSplittedReadTotalTime = readTotalTime.split(':');
+    fetchedSplittedHoursTotalTime = int.parse(fetchedSplittedReadTotalTime[0]);
+    fetchedSplittedMinutesTotalTime =
+        int.parse(fetchedSplittedReadTotalTime[1]);
+    fetchedSplittedSecondsTotalTime =
+        int.parse(fetchedSplittedReadTotalTime[2]);
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future fetchDataFirebase() async {
+    //! Getting read Data and wait for it to fetch the data from firebase than run other things
+    await fetchWeekDataFromFirebase();
   }
 
   void controlDisplayData() {
+    //! Logic to display in minutes: Hours * 60 + Minutes = Total Minutes
     if (isDay == true) {
-      setState(() {
-        // steps = stepsDay;
-        // miles = milesDay;
-        // km = stepsToKmDay;
-        // moveMinutes = moveMinutesDay;
-        daysCountText = " (Today)";
-      });
+      if (readUid != null) {
+        splitReadTimeData();
+        setState(() {
+          int totalMinutesDay =
+              fetchedSplittedHoursDay * 60 + fetchedSplittedMinutesDay;
+          minutes = totalMinutesDay.toString();
+          int totalOverallMinutes = fetchedSplittedHoursTotalTime * 60 +
+              fetchedSplittedMinutesTotalTime;
+          totalTime = totalOverallMinutes.toString();
+          pages = readPagesDay.toString();
+          daysCountText = " (Today)";
+        });
+      } else {
+        setState(() {
+          daysCountText = " (Today)";
+        });
+      }
     } else if (isWeek == true) {
-      setState(() {
-        daysCountText = " (7 Days)";
-      });
+      if (readUid != null) {
+        splitReadTimeData();
+        setState(() {
+          int totalMinutesWeek =
+              fetchedSplittedHoursWeek * 60 + fetchedSplittedMinutesWeek;
+          minutes = totalMinutesWeek.toString();
+          int totalOverallMinutes = fetchedSplittedHoursTotalTime * 60 +
+              fetchedSplittedMinutesTotalTime;
+          totalTime = totalOverallMinutes.toString();
+          pages = readPagesWeek.toString();
+          daysCountText = " (7 Days)";
+        });
+      } else {
+        setState(() {
+          daysCountText = " (7 Days)";
+        });
+      }
     } else if (isMonth == true) {
-      setState(() {
-        daysCountText = " (Month)";
-      });
+      if (readUid != null) {
+        splitReadTimeData();
+        setState(() {
+          int totalMinutesMonth =
+              fetchedSplittedHoursMonth * 60 + fetchedSplittedMinutesMonth;
+          minutes = totalMinutesMonth.toString();
+          int totalOverallMinutes = fetchedSplittedHoursTotalTime * 60 +
+              fetchedSplittedMinutesTotalTime;
+          totalTime = totalOverallMinutes.toString();
+          pages = readPagesMonth.toString();
+          daysCountText = " (Month)";
+        });
+      } else {
+        setState(() {
+          daysCountText = " (Month)";
+        });
+      }
     }
   }
 
   Future fetchData() async {
-    //! Getting Steps Data
-    fetchDataFromFirebase();
-    //! Spliiting Data fetched from Firebase
-    splitReadTimeData();
+    //! Getting read Data and wait for it to fetch the data from firebase than run other things
+    await fetchDataFromFirebase();
+    if (readUid != null) {
+      //! Spliiting Data fetched from Firebase
+      splitReadTimeData();
+      int totalMinutesWeek =
+          fetchedSplittedHoursWeek * 60 + fetchedSplittedMinutesWeek;
+      int totalOverallMinutes =
+          fetchedSplittedHoursTotalTime * 60 + fetchedSplittedMinutesTotalTime;
+      setState(() {
+        //! Setting default week values
+        minutes = totalMinutesWeek.toString();
+        totalTime = totalOverallMinutes.toString();
+        pages = readPagesWeek.toString();
+        isTextColorDay = false;
+        isTextColorWeek = true;
+        isTextColorMonth = false;
+        daysCountText = " (7 Days)";
+      });
 
-    setState(() {
-      //! Setting default week values
-      hours = hoursWeek;
-      minutes = minutesWeek;
-      seconds = secondsWeek;
-      isTextColorDay = false;
-      isTextColorWeek = true;
-      isTextColorMonth = false;
-      daysCountText = " (7 Days)";
-    });
-
-    //! Show data 
-    controlDisplayData();
+      //! Show data
+      // controlDisplayData();
+    } else {
+      if (mounted) {
+        setState(() {
+          //! Setting default week values
+          minutes = "0";
+          totalTime = "0";
+          pages = "0";
+          isTextColorDay = false;
+          isTextColorWeek = true;
+          isTextColorMonth = false;
+          daysCountText = " (7 Days)";
+        });
+      }
+    }
   }
 
   @override
@@ -185,7 +713,9 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                         "Day",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey.shade600,
+                          color: isTextColorDay
+                              ? Colors.white
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
@@ -206,7 +736,9 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
-                          color: Colors.white,
+                          color: isTextColorWeek
+                              ? Colors.white
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
@@ -226,7 +758,9 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                         "Month",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey.shade600,
+                          color: isTextColorMonth
+                              ? Colors.white
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
@@ -252,7 +786,7 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                               //fit: BoxFit.fill,
                             ),
                             Text(
-                              "3m",
+                              "$minutes m",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -265,23 +799,23 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Reading Today",
+                                  "Reading",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 25,
+                                    fontSize: 33,
                                   ),
                                 ),
-                                // Text(
-                                //   "(7 Days)",
-                                //   textAlign: TextAlign.center,
-                                //   style: TextStyle(
-                                //     color: Colors.white,
-                                //     fontWeight: FontWeight.bold,
-                                //     fontSize: 15,
-                                //   ),
-                                // ),
+                                Text(
+                                  "$daysCountText",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
                               ],
                             )
                           ],
@@ -339,7 +873,7 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                               height: 10,
                             ),
                             Text(
-                              "150 min",
+                              "$totalTime min",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -348,32 +882,32 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                           ],
                         ),
                         //! Miles
-                        Column(
-                          children: [
-                            Container(
-                              child: Image.asset(
-                                "Assets/Images/chart.png",
-                                //height: 30,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 12),
-                              decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: darkgrey4, width: 2),
-                                  borderRadius: BorderRadius.circular(25)),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "1.2 Mi",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            )
-                          ],
-                        ),
+                        // Column(
+                        //   children: [
+                        //     Container(
+                        //       child: Image.asset(
+                        //         "Assets/Images/chart.png",
+                        //         //height: 30,
+                        //       ),
+                        //       padding: EdgeInsets.symmetric(
+                        //           vertical: 12, horizontal: 12),
+                        //       decoration: BoxDecoration(
+                        //           border:
+                        //               Border.all(color: darkgrey4, width: 2),
+                        //           borderRadius: BorderRadius.circular(25)),
+                        //     ),
+                        //     SizedBox(
+                        //       height: 10,
+                        //     ),
+                        //     Text(
+                        //       "1.2 Mi",
+                        //       style: TextStyle(
+                        //         fontWeight: FontWeight.bold,
+                        //         color: Colors.white,
+                        //       ),
+                        //     )
+                        //   ],
+                        // ),
                         //! Page Reads
                         Column(
                           children: [
@@ -394,7 +928,7 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                               height: 10,
                             ),
                             Text(
-                              "12 pg",
+                              "$pages pg",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -437,6 +971,29 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                         ),
                         SizedBox(
                           height: 10,
+                        ),
+                        ReadLineChart(
+                          // saturdaySteps:
+                          //     Provider.of<Homeprovider>(context, listen: false)
+                          //         .saturdayReadMinutes,
+                          // sundaySteps:
+                          //     Provider.of<Homeprovider>(context, listen: false)
+                          //         .sundayReadMinutes,
+                          // mondaySteps:
+                          //     Provider.of<Homeprovider>(context, listen: false)
+                          //         .mondayReadMinutes,
+                          // tuesdaySteps:
+                          //     Provider.of<Homeprovider>(context, listen: false)
+                          //         .tuesdayReadMinutes,
+                          // wednesdaySteps:
+                          //     Provider.of<Homeprovider>(context, listen: false)
+                          //         .wednesdayReadMinutes,
+                          // thursdaySteps:
+                          //     Provider.of<Homeprovider>(context, listen: false)
+                          //         .thursdayReadMinutes,
+                          // fridaySteps:
+                          //     Provider.of<Homeprovider>(context, listen: false)
+                          //         .fridayReadMinutes,
                         ),
                         // Text(
                         //   "Lorem ipsum dolor sit amet, consetetur sadscing elitr, sed diam nonumy eirmod.",

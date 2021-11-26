@@ -137,6 +137,13 @@ class _UsernameScreenState extends State<UsernameScreen> {
     }
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+
   // ignore: missing_return
   Future<DocumentSnapshot> fetchDataFromFirebase() async {
     final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
@@ -540,7 +547,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 0, 20, 0),
                   height: 50,
-                  child: TextField( 
+                  child: TextField(
                     controller: _controller,
                     autofocus: false,
                     style: TextStyle(

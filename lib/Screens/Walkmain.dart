@@ -1,8 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
+import 'package:provider/provider.dart';
+import 'package:steps_app/Provider/home_provider.dart';
 import 'package:steps_app/Widgets/Button.dart';
+import 'package:steps_app/Widgets/LineChart.dart';
 import 'package:steps_app/Widgets/bar_chart_widget.dart';
-
+import 'package:intl/intl.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 import '../theme.dart';
 
 enum AppState {
@@ -29,6 +36,62 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
   List<HealthDataPoint> _healthDataListMonthMoveMinutes = [];
 
   AppState _state = AppState.DATA_NOT_FETCHED;
+
+  var mondaySteps;
+  var mondayReadTime;
+  var mondayStartDateDay;
+  var mondayEndDateDay;
+  var mondayStartDateWeek;
+  var mondayEndDateWeek;
+  var mondayUid;
+
+  var tuesdaySteps;
+  var tuesdayReadTime;
+  var tuesdayStartDateDay;
+  var tuesdayEndDateDay;
+  var tuesdayStartDateWeek;
+  var tuesdayEndDateWeek;
+  var tuesdayUid;
+
+  var wednesdaySteps;
+  var wednesdayReadTime;
+  var wednesdayStartDateDay;
+  var wednesdayEndDateDay;
+  var wednesdayStartDateWeek;
+  var wednesdayEndDateWeek;
+  var wednesdayUid;
+
+  var thursdaySteps;
+  var thursdayReadTime;
+  var thursdayStartDateDay;
+  var thursdayEndDateDay;
+  var thursdayStartDateWeek;
+  var thursdayEndDateWeek;
+  var thursdayUid;
+
+  var fridaySteps;
+  var fridayReadTime;
+  var fridayStartDateDay;
+  var fridayEndDateDay;
+  var fridayStartDateWeek;
+  var fridayEndDateWeek;
+  var fridayUid;
+
+  var saturdaySteps;
+  var saturdayReadTime;
+  var saturdayStartDateDay;
+  var saturdayEndDateDay;
+  var saturdayStartDateWeek;
+  var saturdayEndDateWeek;
+  var saturdayUid;
+
+  var sundaySteps;
+  var sundayReadTime;
+  var sundayStartDateDay;
+  var sundayEndDateDay;
+  var sundayStartDateWeek;
+  var sundayEndDateWeek;
+  var sundayUid;
 
   double stepsDay = 0.0;
   double stepsWeek = 0.0;
@@ -74,6 +137,8 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
     ];
 
     List<HealthDataType> typesMoveMinutes = [HealthDataType.MOVE_MINUTES];
+    //! Display default date Only
+    // DateTime.now().toIso8601String().split('T').first
 
     //! For Day
     // DateTime startDateDay = DateTime.now().subtract(Duration(days: 1));
@@ -84,6 +149,10 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
         DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
     DateTime startDateDay = _firstDateOfTheDay;
     DateTime endDateDay = _lastDateOfTheDay;
+    // DateFormat format = DateFormat("HH:mm:ss");
+    // String tempDate = DateFormat.Hms().format(startDateDay);
+    print("Today's Day:          " +
+        DateFormat('EEEE').format(DateTime.now()).toString());
     print("Today start Date:       " + _firstDateOfTheDay.toString());
     print("Today end Date:       " + _lastDateOfTheDay.toString());
 
@@ -270,11 +339,806 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
     }
   }
 
+  Future sendWeekDataToFirebase() async {
+    //! Display default date Only
+    // DateTime.now().toIso8601String().split('T').first
+    //! For Day
+    // DateTime startDateDay = DateTime.now().subtract(Duration(days: 1));
+    // DateTime endDateDay = DateTime.now();
+    DateTime _firstDateOfTheDay =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    DateTime _lastDateOfTheDay = DateTime(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
+    var startDateDay = _firstDateOfTheDay.toIso8601String().split('T').first;
+    var endDateDay = _lastDateOfTheDay.toIso8601String().split('T').first;
+    print("Today start Date:       " + _firstDateOfTheDay.toString());
+    print("Today end Date:       " + _lastDateOfTheDay.toString());
+
+    //! For Week
+    DateTime _firstDateOfTheweek =
+        DateTime.now().subtract(new Duration(days: DateTime.now().weekday - 1));
+    DateTime _lastDateOfWeek = _firstDateOfTheweek.add(new Duration(days: 6));
+    var startDateWeek = _firstDateOfTheweek.toIso8601String().split('T').first;
+    var endDateWeek = _lastDateOfWeek.toIso8601String().split('T').first;
+    print("Week start Date:       " + _firstDateOfTheweek.toString());
+    print("Week end Date:       " + _lastDateOfWeek.toString());
+
+    //! For Month
+    DateTime _firstDateOfMonth =
+        new DateTime(DateTime.now().year, DateTime.now().month, 1);
+    DateTime _lastDateOfMonth =
+        DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
+    var startDateMonth = _firstDateOfMonth.toIso8601String().split('T').first;
+    var endDateMonth = _lastDateOfMonth.toIso8601String().split('T').first;
+    print("Month start Date:       " + _firstDateOfMonth.toString());
+    print("Month end Date:       " + _lastDateOfMonth.toString());
+
+    //! Send data to Firebase
+    // ignore: missing_return
+    final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+    //! MondayData Table
+    await _fireStore.collection("MondayData").get().then((querySnapshot) async {
+      //* Check if Collection / Table exists or not
+      //* Only runs for the first time if table not exists
+      if (querySnapshot.docs.isEmpty) {
+        // collection doesnt exist
+        // then create
+        FirebaseFirestore.instance
+            .collection("MondayData")
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .set({
+          "Steps":
+              DateFormat('EEEE').format(DateTime.now()).toString() == "Monday"
+                  ? stepsDay
+                  : 0.0,
+          "ReadTime": "00:00:00",
+          "StartDateDay": startDateDay.toString(),
+          "EndDateDay": endDateDay.toString(),
+          "StartDateWeek": startDateWeek.toString(),
+          "EndDateWeek": endDateWeek.toString(),
+          "Uid": FirebaseAuth.instance.currentUser.uid,
+        }).then((value) {});
+      } else if (querySnapshot.docs.isNotEmpty) {
+        //* If table exists but Uid/User not exists.
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid != result.data()['Uid']) {
+            FirebaseFirestore.instance
+                .collection("MondayData")
+                .doc(FirebaseAuth.instance.currentUser.uid)
+                .set({
+              "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                      "Monday"
+                  ? stepsDay
+                  : 0.0,
+              "ReadTime": "00:00:00",
+              "StartDateDay": startDateDay.toString(),
+              "EndDateDay": endDateDay.toString(),
+              "StartDateWeek": startDateWeek.toString(),
+              "EndDateWeek": endDateWeek.toString(),
+              "Uid": FirebaseAuth.instance.currentUser.uid,
+            }).then((value) {});
+            //* If table exists also User, update it.
+          } else if (FirebaseAuth.instance.currentUser.uid ==
+              result.data()['Uid']) {
+            //! MondayData - Logic Of endDateWeek before updating...
+            if (endDateWeek.compareTo(mondayEndDateWeek) == 0) {
+              //* Check if Week end date same as firebase Week end date only then add and update read time
+              if (DateFormat('EEEE').format(DateTime.now()).toString() ==
+                  "Monday") {
+                await FirebaseFirestore.instance
+                    .collection("MondayData")
+                    .doc(FirebaseAuth.instance.currentUser.uid)
+                    .update({
+                  // "Steps": (stepsDay + double.parse(mondaySteps)).toString(),
+                  "Steps": stepsDay,
+                  "StartDateDay": startDateDay.toString(),
+                  "EndDateDay": endDateDay.toString(),
+                }).then((value) {
+                  // //* Show success pop up dialog
+                  // print("Book read time updated successfully.");
+                });
+              }
+            } else {
+              // print('false');
+              //* Check if Week end date is not same as firebase Week end date only then update new date
+              //* Because now it is a new Week. So, reset and update new end date
+              await FirebaseFirestore.instance
+                  .collection("MondayData")
+                  .doc(FirebaseAuth.instance.currentUser.uid)
+                  .update({
+                "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                        "Monday"
+                    ? stepsDay
+                    : 0.0,
+                "StartDateDay": startDateDay.toString(),
+                "EndDateDay": endDateDay.toString(),
+                "StartDateWeek": startDateWeek.toString(),
+                "EndDateWeek": endDateWeek.toString(),
+              }).then((value) {
+                // //* Show success pop up dialog
+                // print("Book read time updated successfully.");
+              });
+            }
+          }
+        }
+        // setState(() {});
+      }
+    });
+    //! TuesdayData Table
+    await _fireStore
+        .collection("TuesdayData")
+        .get()
+        .then((querySnapshot) async {
+      //* Check if Collection / Table exists or not
+      //* Only runs for the first time if table not exists
+      if (querySnapshot.docs.isEmpty) {
+        // collection doesnt exist
+        // then create
+        FirebaseFirestore.instance
+            .collection("TuesdayData")
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .set({
+          "Steps":
+              DateFormat('EEEE').format(DateTime.now()).toString() == "Tuesday"
+                  ? stepsDay
+                  : 0.0,
+          "ReadTime": "00:00:00",
+          "StartDateDay": startDateDay.toString(),
+          "EndDateDay": endDateDay.toString(),
+          "StartDateWeek": startDateWeek.toString(),
+          "EndDateWeek": endDateWeek.toString(),
+          "Uid": FirebaseAuth.instance.currentUser.uid,
+        }).then((value) {});
+      } else if (querySnapshot.docs.isNotEmpty) {
+        //* If table exists but Uid/User not exists.
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid != result.data()['Uid']) {
+            FirebaseFirestore.instance
+                .collection("TuesdayData")
+                .doc(FirebaseAuth.instance.currentUser.uid)
+                .set({
+              "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                      "Tuesday"
+                  ? stepsDay
+                  : 0.0,
+              "ReadTime": "00:00:00",
+              "StartDateDay": startDateDay.toString(),
+              "EndDateDay": endDateDay.toString(),
+              "StartDateWeek": startDateWeek.toString(),
+              "EndDateWeek": endDateWeek.toString(),
+              "Uid": FirebaseAuth.instance.currentUser.uid,
+            }).then((value) {});
+            //* If table exists also User, update it.
+          } else if (FirebaseAuth.instance.currentUser.uid ==
+              result.data()['Uid']) {
+            //! TuesdayData - Logic Of endDateWeek before updating...
+            if (endDateWeek.compareTo(tuesdayEndDateWeek) == 0) {
+              //* Check if Week end date same as firebase Week end date only then add and update read time
+              if (DateFormat('EEEE').format(DateTime.now()).toString() ==
+                  "Tuesday") {
+                await FirebaseFirestore.instance
+                    .collection("TuesdayData")
+                    .doc(FirebaseAuth.instance.currentUser.uid)
+                    .update({
+                  // "Steps": (stepsDay + tuesdaySteps),
+                  "Steps": stepsDay,
+                  "StartDateDay": startDateDay.toString(),
+                  "EndDateDay": endDateDay.toString(),
+                }).then((value) {
+                  // //* Show success pop up dialog
+                  // print("Book read time updated successfully.");
+                });
+              }
+            } else {
+              // print('false');
+              //* Check if Week end date is not same as firebase Week end date only then update new date
+              //* Because now it is a new Week. So, reset and update new end date
+              await FirebaseFirestore.instance
+                  .collection("TuesdayData")
+                  .doc(FirebaseAuth.instance.currentUser.uid)
+                  .update({
+                "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                        "Tuesday"
+                    ? stepsDay
+                    : 0.0,
+                "StartDateDay": startDateDay.toString(),
+                "EndDateDay": endDateDay.toString(),
+                "StartDateWeek": startDateWeek.toString(),
+                "EndDateWeek": endDateWeek.toString(),
+              }).then((value) {
+                // //* Show success pop up dialog
+                // print("Book read time updated successfully.");
+              });
+            }
+          }
+        }
+        // setState(() {});
+      }
+    });
+    //! WednesdayData Table
+    await _fireStore
+        .collection("WednesdayData")
+        .get()
+        .then((querySnapshot) async {
+      //* Check if Collection / Table exists or not
+      //* Only runs for the first time if table not exists
+      if (querySnapshot.docs.isEmpty) {
+        // collection doesnt exist
+        // then create
+        FirebaseFirestore.instance
+            .collection("WednesdayData")
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .set({
+          "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                  "Wednesday"
+              ? stepsDay
+              : 0.0,
+          "ReadTime": "00:00:00",
+          "StartDateDay": startDateDay.toString(),
+          "EndDateDay": endDateDay.toString(),
+          "StartDateWeek": startDateWeek.toString(),
+          "EndDateWeek": endDateWeek.toString(),
+          "Uid": FirebaseAuth.instance.currentUser.uid,
+        }).then((value) {});
+      } else if (querySnapshot.docs.isNotEmpty) {
+        //* If table exists but Uid/User not exists.
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid != result.data()['Uid']) {
+            FirebaseFirestore.instance
+                .collection("WednesdayData")
+                .doc(FirebaseAuth.instance.currentUser.uid)
+                .set({
+              "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                      "Wednesday"
+                  ? stepsDay
+                  : 0.0,
+              "ReadTime": "00:00:00",
+              "StartDateDay": startDateDay.toString(),
+              "EndDateDay": endDateDay.toString(),
+              "StartDateWeek": startDateWeek.toString(),
+              "EndDateWeek": endDateWeek.toString(),
+              "Uid": FirebaseAuth.instance.currentUser.uid,
+            }).then((value) {});
+            //* If table exists also User, update it.
+          } else if (FirebaseAuth.instance.currentUser.uid ==
+              result.data()['Uid']) {
+            //! WednesdayData - Logic Of endDateWeek before updating...
+            if (endDateWeek.compareTo(wednesdayEndDateWeek) == 0) {
+              //* Check if Week end date same as firebase Week end date only then add and update read time
+              if (DateFormat('EEEE').format(DateTime.now()).toString() ==
+                  "Wednesday") {
+                await FirebaseFirestore.instance
+                    .collection("WednesdayData")
+                    .doc(FirebaseAuth.instance.currentUser.uid)
+                    .update({
+                  // "Steps": (stepsDay + wednesdaySteps),
+                  "Steps": stepsDay,
+                  "StartDateDay": startDateDay.toString(),
+                  "EndDateDay": endDateDay.toString(),
+                }).then((value) {
+                  // //* Show success pop up dialog
+                  // print("Book read time updated successfully.");
+                });
+              }
+            } else {
+              // print('false');
+              //* Check if Week end date is not same as firebase Week end date only then update new date
+              //* Because now it is a new Week. So, reset and update new end date
+              await FirebaseFirestore.instance
+                  .collection("WednesdayData")
+                  .doc(FirebaseAuth.instance.currentUser.uid)
+                  .update({
+                "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                        "Wednesday"
+                    ? stepsDay
+                    : 0.0,
+                "StartDateDay": startDateDay.toString(),
+                "EndDateDay": endDateDay.toString(),
+                "StartDateWeek": startDateWeek.toString(),
+                "EndDateWeek": endDateWeek.toString(),
+              }).then((value) {
+                // //* Show success pop up dialog
+                // print("Book read time updated successfully.");
+              });
+            }
+          }
+        }
+        // setState(() {});
+      }
+    });
+
+    //! ThursdayData Table
+    await _fireStore
+        .collection("ThursdayData")
+        .get()
+        .then((querySnapshot) async {
+      //* Check if Collection / Table exists or not
+      //* Only runs for the first time if table not exists
+      if (querySnapshot.docs.isEmpty) {
+        // collection doesnt exist
+        // then create
+        FirebaseFirestore.instance
+            .collection("ThursdayData")
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .set({
+          "Steps":
+              DateFormat('EEEE').format(DateTime.now()).toString() == "Thursday"
+                  ? stepsDay
+                  : 0.0,
+          "ReadTime": "00:00:00",
+          "StartDateDay": startDateDay.toString(),
+          "EndDateDay": endDateDay.toString(),
+          "StartDateWeek": startDateWeek.toString(),
+          "EndDateWeek": endDateWeek.toString(),
+          "Uid": FirebaseAuth.instance.currentUser.uid,
+        }).then((value) {});
+      } else if (querySnapshot.docs.isNotEmpty) {
+        //* If table exists but Uid/User not exists.
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid != result.data()['Uid']) {
+            FirebaseFirestore.instance
+                .collection("ThursdayData")
+                .doc(FirebaseAuth.instance.currentUser.uid)
+                .set({
+              "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                      "Thursday"
+                  ? stepsDay
+                  : 0.0,
+              "ReadTime": "00:00:00",
+              "StartDateDay": startDateDay.toString(),
+              "EndDateDay": endDateDay.toString(),
+              "StartDateWeek": startDateWeek.toString(),
+              "EndDateWeek": endDateWeek.toString(),
+              "Uid": FirebaseAuth.instance.currentUser.uid,
+            }).then((value) {});
+            //* If table exists also User, update it.
+          } else if (FirebaseAuth.instance.currentUser.uid ==
+              result.data()['Uid']) {
+            //! ThursdayData - Logic Of endDateWeek before updating...
+            if (endDateWeek.compareTo(thursdayEndDateWeek) == 0) {
+              //* Check if Week end date same as firebase Week end date only then add and update read time
+              if (DateFormat('EEEE').format(DateTime.now()).toString() ==
+                  "Thursday") {
+                await FirebaseFirestore.instance
+                    .collection("ThursdayData")
+                    .doc(FirebaseAuth.instance.currentUser.uid)
+                    .update({
+                  // "Steps": (stepsDay + thursdaySteps),
+                  "Steps": stepsDay,
+                  "StartDateDay": startDateDay.toString(),
+                  "EndDateDay": endDateDay.toString(),
+                }).then((value) {
+                  // //* Show success pop up dialog
+                  // print("Book read time updated successfully.");
+                });
+              }
+            } else {
+              // print('false');
+              //* Check if Week end date is not same as firebase Week end date only then update new date
+              //* Because now it is a new Week. So, reset and update new end date
+              await FirebaseFirestore.instance
+                  .collection("ThursdayData")
+                  .doc(FirebaseAuth.instance.currentUser.uid)
+                  .update({
+                "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                        "Thursday"
+                    ? stepsDay
+                    : 0.0,
+                "StartDateDay": startDateDay.toString(),
+                "EndDateDay": endDateDay.toString(),
+                "StartDateWeek": startDateWeek.toString(),
+                "EndDateWeek": endDateWeek.toString(),
+              }).then((value) {
+                // //* Show success pop up dialog
+                // print("Book read time updated successfully.");
+              });
+            }
+          }
+        }
+        // setState(() {});
+      }
+    });
+
+    //! FridayData Table
+    await _fireStore.collection("FridayData").get().then((querySnapshot) async {
+      //* Check if Collection / Table exists or not
+      //* Only runs for the first time if table not exists
+      if (querySnapshot.docs.isEmpty) {
+        // collection doesnt exist
+        // then create
+        FirebaseFirestore.instance
+            .collection("FridayData")
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .set({
+          "Steps":
+              DateFormat('EEEE').format(DateTime.now()).toString() == "Friday"
+                  ? stepsDay
+                  : 0.0,
+          "ReadTime": "00:00:00",
+          "StartDateDay": startDateDay.toString(),
+          "EndDateDay": endDateDay.toString(),
+          "StartDateWeek": startDateWeek.toString(),
+          "EndDateWeek": endDateWeek.toString(),
+          "Uid": FirebaseAuth.instance.currentUser.uid,
+        }).then((value) {});
+      } else if (querySnapshot.docs.isNotEmpty) {
+        //* If table exists but Uid/User not exists.
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid != result.data()['Uid']) {
+            FirebaseFirestore.instance
+                .collection("FridayData")
+                .doc(FirebaseAuth.instance.currentUser.uid)
+                .set({
+              "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                      "Friday"
+                  ? stepsDay
+                  : 0.0,
+              "ReadTime": "00:00:00",
+              "StartDateDay": startDateDay.toString(),
+              "EndDateDay": endDateDay.toString(),
+              "StartDateWeek": startDateWeek.toString(),
+              "EndDateWeek": endDateWeek.toString(),
+              "Uid": FirebaseAuth.instance.currentUser.uid,
+            }).then((value) {});
+            //* If table exists also User, update it.
+          } else if (FirebaseAuth.instance.currentUser.uid ==
+              result.data()['Uid']) {
+            //! FridayData - Logic Of endDateWeek before updating...
+            if (endDateWeek.compareTo(fridayEndDateWeek) == 0) {
+              //* Check if Week end date same as firebase Week end date only then add and update read time
+              if (DateFormat('EEEE').format(DateTime.now()).toString() ==
+                  "Friday") {
+                await FirebaseFirestore.instance
+                    .collection("FridayData")
+                    .doc(FirebaseAuth.instance.currentUser.uid)
+                    .update({
+                  // "Steps": (stepsDay + fridaySteps),
+                  "Steps": stepsDay,
+                  "StartDateDay": startDateDay.toString(),
+                  "EndDateDay": endDateDay.toString(),
+                }).then((value) {
+                  // //* Show success pop up dialog
+                  // print("Book read time updated successfully.");
+                });
+              }
+            } else {
+              // print('false');
+              //* Check if Week end date is not same as firebase Week end date only then update new date
+              //* Because now it is a new Week. So, reset and update new end date
+              await FirebaseFirestore.instance
+                  .collection("FridayData")
+                  .doc(FirebaseAuth.instance.currentUser.uid)
+                  .update({
+                "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                        "Friday"
+                    ? stepsDay
+                    : 0.0,
+                "StartDateDay": startDateDay.toString(),
+                "EndDateDay": endDateDay.toString(),
+                "StartDateWeek": startDateWeek.toString(),
+                "EndDateWeek": endDateWeek.toString(),
+              }).then((value) {
+                // //* Show success pop up dialog
+                // print("Book read time updated successfully.");
+              });
+            }
+          }
+        }
+        // setState(() {});
+      }
+    });
+    //! SaturdayData Table
+    await _fireStore
+        .collection("SaturdayData")
+        .get()
+        .then((querySnapshot) async {
+      //* Check if Collection / Table exists or not
+      //* Only runs for the first time if table not exists
+      if (querySnapshot.docs.isEmpty) {
+        // collection doesnt exist
+        // then create
+        FirebaseFirestore.instance
+            .collection("SaturdayData")
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .set({
+          "Steps":
+              DateFormat('EEEE').format(DateTime.now()).toString() == "Saturday"
+                  ? stepsDay
+                  : 0.0,
+          "ReadTime": "00:00:00",
+          "StartDateDay": startDateDay.toString(),
+          "EndDateDay": endDateDay.toString(),
+          "StartDateWeek": startDateWeek.toString(),
+          "EndDateWeek": endDateWeek.toString(),
+          "Uid": FirebaseAuth.instance.currentUser.uid,
+        }).then((value) {});
+      } else if (querySnapshot.docs.isNotEmpty) {
+        //* If table exists but Uid/User not exists.
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid != result.data()['Uid']) {
+            FirebaseFirestore.instance
+                .collection("SaturdayData")
+                .doc(FirebaseAuth.instance.currentUser.uid)
+                .set({
+              "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                      "Saturday"
+                  ? stepsDay
+                  : 0.0,
+              "ReadTime": "00:00:00",
+              "StartDateDay": startDateDay.toString(),
+              "EndDateDay": endDateDay.toString(),
+              "StartDateWeek": startDateWeek.toString(),
+              "EndDateWeek": endDateWeek.toString(),
+              "Uid": FirebaseAuth.instance.currentUser.uid,
+            }).then((value) {});
+            //* If table exists also User, update it.
+          } else if (FirebaseAuth.instance.currentUser.uid ==
+              result.data()['Uid']) {
+            //! SaturdayData - Logic Of endDateWeek before updating...
+            if (endDateWeek.compareTo(saturdayEndDateWeek) == 0) {
+              //* Check if Week end date same as firebase Week end date only then add and update read time
+              if (DateFormat('EEEE').format(DateTime.now()).toString() ==
+                  "Saturday") {
+                await FirebaseFirestore.instance
+                    .collection("SaturdayData")
+                    .doc(FirebaseAuth.instance.currentUser.uid)
+                    .update({
+                  // "Steps": (stepsDay + saturdaySteps),
+                  "Steps": stepsDay,
+                  "StartDateDay": startDateDay.toString(),
+                  "EndDateDay": endDateDay.toString(),
+                }).then((value) {
+                  // //* Show success pop up dialog
+                  // print("Book read time updated successfully.");
+                });
+              }
+            } else {
+              // print('false');
+              //* Check if Week end date is not same as firebase Week end date only then update new date
+              //* Because now it is a new Week. So, reset and update new end date
+              await FirebaseFirestore.instance
+                  .collection("SaturdayData")
+                  .doc(FirebaseAuth.instance.currentUser.uid)
+                  .update({
+                "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                        "Saturday"
+                    ? stepsDay
+                    : 0.0,
+                "StartDateDay": startDateDay.toString(),
+                "EndDateDay": endDateDay.toString(),
+                "StartDateWeek": startDateWeek.toString(),
+                "EndDateWeek": endDateWeek.toString(),
+              }).then((value) {
+                // //* Show success pop up dialog
+                // print("Book read time updated successfully.");
+              });
+            }
+          }
+        }
+        // setState(() {});
+      }
+    });
+    //! SundayData Table
+    await _fireStore.collection("SundayData").get().then((querySnapshot) async {
+      //* Check if Collection / Table exists or not
+      //* Only runs for the first time if table not exists
+      if (querySnapshot.docs.isEmpty) {
+        // collection doesnt exist
+        // then create
+        FirebaseFirestore.instance
+            .collection("SundayData")
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .set({
+          "Steps":
+              DateFormat('EEEE').format(DateTime.now()).toString() == "Sunday"
+                  ? stepsDay
+                  : 0.0,
+          "ReadTime": "00:00:00",
+          "StartDateDay": startDateDay.toString(),
+          "EndDateDay": endDateDay.toString(),
+          "StartDateWeek": startDateWeek.toString(),
+          "EndDateWeek": endDateWeek.toString(),
+          "Uid": FirebaseAuth.instance.currentUser.uid,
+        }).then((value) {});
+      } else if (querySnapshot.docs.isNotEmpty) {
+        //* If table exists but Uid/User not exists.
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid != result.data()['Uid']) {
+            FirebaseFirestore.instance
+                .collection("SundayData")
+                .doc(FirebaseAuth.instance.currentUser.uid)
+                .set({
+              "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                      "Sunday"
+                  ? stepsDay
+                  : 0.0,
+              "ReadTime": "00:00:00",
+              "StartDateDay": startDateDay.toString(),
+              "EndDateDay": endDateDay.toString(),
+              "StartDateWeek": startDateWeek.toString(),
+              "EndDateWeek": endDateWeek.toString(),
+              "Uid": FirebaseAuth.instance.currentUser.uid,
+            }).then((value) {});
+            //* If table exists also User, update it.
+          } else if (FirebaseAuth.instance.currentUser.uid ==
+              result.data()['Uid']) {
+            //! SundayData - Logic Of endDateWeek before updating...
+            if (endDateWeek.compareTo(sundayEndDateWeek) == 0) {
+              //* Check if Week end date same as firebase Week end date only then add and update read time
+              if (DateFormat('EEEE').format(DateTime.now()).toString() ==
+                  "Sunday") {
+                await FirebaseFirestore.instance
+                    .collection("SundayData")
+                    .doc(FirebaseAuth.instance.currentUser.uid)
+                    .update({
+                  // "Steps": (stepsDay + sundaySteps),
+                  "Steps": stepsDay,
+                  "StartDateDay": startDateDay.toString(),
+                  "EndDateDay": endDateDay.toString(),
+                }).then((value) {
+                  // //* Show success pop up dialog
+                  // print("Book read time updated successfully.");
+                });
+              }
+            } else {
+              // print('false');
+              //* Check if Week end date is not same as firebase Week end date only then update new date
+              //* Because now it is a new Week. So, reset and update new end date
+              await FirebaseFirestore.instance
+                  .collection("SundayData")
+                  .doc(FirebaseAuth.instance.currentUser.uid)
+                  .update({
+                "Steps": DateFormat('EEEE').format(DateTime.now()).toString() ==
+                        "Sunday"
+                    ? stepsDay
+                    : 0.0,
+                "StartDateDay": startDateDay.toString(),
+                "EndDateDay": endDateDay.toString(),
+                "StartDateWeek": startDateWeek.toString(),
+                "EndDateWeek": endDateWeek.toString(),
+              }).then((value) {
+                // //* Show success pop up dialog
+                // print("Book read time updated successfully.");
+              });
+            }
+          }
+        }
+        // setState(() {});
+      }
+    });
+    //! Spliiting Data fetched from Firebase
+    // splitReadTimeData();
+  }
+
+  // ignore: missing_return
+  Future<DocumentSnapshot> fetchWeekDataFromFirebase() async {
+    final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+
+    await _fireStore.collection("MondayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          Provider.of<Homeprovider>(context, listen: false)
+              .mondayStepsValue(result.data()['Steps']);
+          mondaySteps = result.data()['Steps'];
+          mondayReadTime = result.data()['ReadTime'];
+          mondayStartDateDay = result.data()['StartDateDay'];
+          mondayEndDateDay = result.data()['EndDateDay'];
+          mondayStartDateWeek = result.data()['StartDateWeek'];
+          mondayEndDateWeek = result.data()['EndDateWeek'];
+          mondayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("TuesdayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          Provider.of<Homeprovider>(context, listen: false)
+              .tuesdayStepsValue(result.data()['Steps']);
+          tuesdaySteps = result.data()['Steps'];
+          tuesdayReadTime = result.data()['ReadTime'];
+          tuesdayStartDateDay = result.data()['StartDateDay'];
+          tuesdayEndDateDay = result.data()['EndDateDay'];
+          tuesdayStartDateWeek = result.data()['StartDateWeek'];
+          tuesdayEndDateWeek = result.data()['EndDateWeek'];
+          tuesdayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("WednesdayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          Provider.of<Homeprovider>(context, listen: false)
+              .wednesdayStepsValue(result.data()['Steps']);
+          wednesdaySteps = result.data()['Steps'];
+          wednesdayReadTime = result.data()['ReadTime'];
+          wednesdayStartDateDay = result.data()['StartDateDay'];
+          wednesdayEndDateDay = result.data()['EndDateDay'];
+          wednesdayStartDateWeek = result.data()['StartDateWeek'];
+          wednesdayEndDateWeek = result.data()['EndDateWeek'];
+          wednesdayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("ThursdayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          Provider.of<Homeprovider>(context, listen: false)
+              .thursdayStepsValue(result.data()['Steps']);
+          thursdaySteps = result.data()['Steps'];
+          thursdayReadTime = result.data()['ReadTime'];
+          thursdayStartDateDay = result.data()['StartDateDay'];
+          thursdayEndDateDay = result.data()['EndDateDay'];
+          thursdayStartDateWeek = result.data()['StartDateWeek'];
+          thursdayEndDateWeek = result.data()['EndDateWeek'];
+          thursdayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("FridayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          Provider.of<Homeprovider>(context, listen: false)
+              .fridayStepsValue(result.data()['Steps']);
+          fridaySteps = result.data()['Steps'];
+          fridayReadTime = result.data()['ReadTime'];
+          fridayStartDateDay = result.data()['StartDateDay'];
+          fridayEndDateDay = result.data()['EndDateDay'];
+          fridayStartDateWeek = result.data()['StartDateWeek'];
+          fridayEndDateWeek = result.data()['EndDateWeek'];
+          fridayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("SaturdayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          Provider.of<Homeprovider>(context, listen: false)
+              .saturdayStepsValue(result.data()['Steps']);
+          saturdaySteps = result.data()['Steps'];
+          saturdayReadTime = result.data()['ReadTime'];
+          saturdayStartDateDay = result.data()['StartDateDay'];
+          saturdayEndDateDay = result.data()['EndDateDay'];
+          saturdayStartDateWeek = result.data()['StartDateWeek'];
+          saturdayEndDateWeek = result.data()['EndDateWeek'];
+          saturdayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("SundayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          Provider.of<Homeprovider>(context, listen: false)
+              .sundayStepsValue(result.data()['Steps']);
+          sundaySteps = result.data()['Steps'];
+          sundayReadTime = result.data()['ReadTime'];
+          sundayStartDateDay = result.data()['StartDateDay'];
+          sundayEndDateDay = result.data()['EndDateDay'];
+          sundayStartDateWeek = result.data()['StartDateWeek'];
+          sundayEndDateWeek = result.data()['EndDateWeek'];
+          sundayUid = result.data()['Uid'];
+        }
+      }
+    });
+    setState(() {});
+  }
+
+  Future fetchDataFirebase() async {
+    //! Getting read Data and wait for it to fetch the data from firebase than run other things
+    await fetchWeekDataFromFirebase();
+    sendWeekDataToFirebase();
+  }
+
   @override
   void initState() {
     fetchData();
     // TODO: implement initState
     super.initState();
+    fetchDataFirebase();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void controlDisplayData() {
@@ -308,6 +1172,7 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // body: BarChartWidget(),
       body: SingleChildScrollView(
         child: Container(
           color: Colors.black,
@@ -599,6 +1464,43 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
                             height: 10,
                           ),
                           //! Weekly Chart
+                          LineChartSample2(
+                            saturdaySteps: Provider.of<Homeprovider>(context,
+                                    listen: false)
+                                .saturdaySteps,
+                            sundaySteps: Provider.of<Homeprovider>(context,
+                                    listen: false)
+                                .saturdaySteps,
+                            mondaySteps: Provider.of<Homeprovider>(context,
+                                    listen: false)
+                                .mondaySteps,
+                            tuesdaySteps: Provider.of<Homeprovider>(context,
+                                    listen: false)
+                                .tuesdaySteps,
+                            wednesdaySteps: Provider.of<Homeprovider>(context,
+                                    listen: false)
+                                .wednesdaySteps,
+                            thursdaySteps: Provider.of<Homeprovider>(context,
+                                    listen: false)
+                                .thursdaySteps,
+                            fridaySteps: Provider.of<Homeprovider>(context,
+                                    listen: false)
+                                .fridaySteps,
+                            // saturdaySteps: double.parse(saturdaySteps),
+                            // sundaySteps: double.parse(sundaySteps),
+                            // mondaySteps: double.parse(mondaySteps),
+                            // tuesdaySteps: double.parse(tuesdaySteps),
+                            // wednesdaySteps: double.parse(wednesdaySteps),
+                            // thursdaySteps: double.parse(thursdaySteps),
+                            // fridaySteps: double.parse(fridaySteps),
+                            // saturdaySteps: 75,
+                            // sundaySteps: 0,
+                            // mondaySteps: 0,
+                            // tuesdaySteps: 0,
+                            // wednesdaySteps: 75,
+                            // thursdaySteps: 0,
+                            // fridaySteps: 0,
+                          ),
                           // Card(
                           //   elevation: 4,
                           //   shape: RoundedRectangleBorder(
@@ -607,7 +1509,9 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
                           //   color: const Color(0xff020227),
                           //   child: Padding(
                           //     padding: const EdgeInsets.only(top: 16),
-                          //     child: BarChartWidget(),
+                          //     child: Expanded(
+                          //       child: BarChartWidget(),
+                          //     ),
                           //   ),
                           // ),
                           // Text(
@@ -619,7 +1523,6 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
                           //     //fontSize: 16,
                           //   ),
                           // ),
-
                           // SizedBox(
                           //   child: ListView(
                           //     scrollDirection: Axis.horizontal,

@@ -30,11 +30,13 @@ class _MoreState extends State<More> {
             // print("\n\n");
             // print("${result.data()['Uid']}");
             // print("\n\n");
-            setState(() {
-              userName = result.data()['UserName'];
-              phoneNumber = result.data()['PhoneNumber'];
-              email = result.data()['Email'];
-            });
+            if (mounted) {
+              setState(() {
+                userName = result.data()['UserName'];
+                phoneNumber = result.data()['PhoneNumber'];
+                email = result.data()['Email'];
+              });
+            }
           } else {}
         }
       },

@@ -15,37 +15,37 @@ class MainSceeen extends StatelessWidget {
   // ignore: missing_return
 
   //! Check if User Exists
-  Future<DocumentSnapshot> fetchDataFromFirebase(context) async {
-    final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
-    await _fireStore.collection("UsersData").get().then(
-      (querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-            print("\n\n");
-            print("${result.data()['Uid']}");
-            print("\n\n");
-            isUserExists = true;
-            Navigator.pop(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              ),
-            );
-          } else {
-            isUserExists = false;
-            Navigator.pop(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UsernameScreen(),
-              ),
-            );
-          }
-        }
-      },
-    );
-  }
+  // Future<DocumentSnapshot> fetchDataFromFirebase(context) async {
+  //   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+  //   await _fireStore.collection("UsersData").get().then(
+  //     (querySnapshot) {
+  //       for (var result in querySnapshot.docs) {
+  //         if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+  //           print("\n\n");
+  //           print("${result.data()['Uid']}");
+  //           print("\n\n");
+  //           isUserExists = true;
+  //           Navigator.pop(context);
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => HomePage(),
+  //             ),
+  //           );
+  //         } else {
+  //           isUserExists = false;
+  //           Navigator.pop(context);
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => UsernameScreen(),
+  //             ),
+  //           );
+  //         }
+  //       }
+  //     },
+  //   );
+  // }
 
   signInWithGoogle(context) async {
     // showDialog(
@@ -82,8 +82,40 @@ class MainSceeen extends StatelessWidget {
               accessToken: googleAuth.accessToken,
             ),
           )
-              .then((value) {
-            fetchDataFromFirebase(context);
+              .then((value) async {
+            final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+
+            await _fireStore.collection("UsersData").get().then(
+              (querySnapshot) async {
+                await Future.forEach(querySnapshot.docs, (result) async {
+                  if (FirebaseAuth.instance.currentUser.uid ==
+                      result.data()['Uid']) {
+                    print(isUserExists);
+                    print("\n\n");
+                    print("${result.data()['Uid']}");
+                    print("\n\n");
+                   isUserExists = true;
+                  } 
+                });
+                if (isUserExists == true) {
+                  print("Hello user is exist.");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(),
+                    ),
+                  );
+                } else if (isUserExists == false) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UsernameScreen(),
+                    ),
+                  );
+                }
+              },
+            );
+
             // if (isUserExists == true) {
             //   Navigator.pop(context);
             //   Navigator.push(
@@ -104,7 +136,7 @@ class MainSceeen extends StatelessWidget {
           });
           print(
               '${authResult.user}-----------------------------------------user here');
-
+          // fetchDataFromFirebase(context);
           //return _userFromFirebase(authResult.user);
         } else {
           Navigator.pop(context);

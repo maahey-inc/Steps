@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:steps_app/Widgets/Button.dart';
@@ -5,8 +7,500 @@ import 'package:steps_app/theme.dart';
 
 import '../theme.dart';
 
-class Homescreen extends StatelessWidget {
+class Homescreen extends StatefulWidget {
   //const Homescreen({Key? key}) : super(key: key);
+  @override
+  State<Homescreen> createState() => _HomescreenState();
+}
+
+class _HomescreenState extends State<Homescreen> {
+  var mondaySteps;
+  var mondayReadTime;
+  var mondayStartDateDay;
+  var mondayEndDateDay;
+  var mondayStartDateWeek;
+  var mondayEndDateWeek;
+  var mondayUid;
+
+  var tuesdaySteps;
+  var tuesdayReadTime;
+  var tuesdayStartDateDay;
+  var tuesdayEndDateDay;
+  var tuesdayStartDateWeek;
+  var tuesdayEndDateWeek;
+  var tuesdayUid;
+
+  var wednesdaySteps;
+  var wednesdayReadTime;
+  var wednesdayStartDateDay;
+  var wednesdayEndDateDay;
+  var wednesdayStartDateWeek;
+  var wednesdayEndDateWeek;
+  var wednesdayUid;
+
+  var thursdaySteps;
+  var thursdayReadTime;
+  var thursdayStartDateDay;
+  var thursdayEndDateDay;
+  var thursdayStartDateWeek;
+  var thursdayEndDateWeek;
+  var thursdayUid;
+
+  var fridaySteps;
+  var fridayReadTime;
+  var fridayStartDateDay;
+  var fridayEndDateDay;
+  var fridayStartDateWeek;
+  var fridayEndDateWeek;
+  var fridayUid;
+
+  var saturdaySteps;
+  var saturdayReadTime;
+  var saturdayStartDateDay;
+  var saturdayEndDateDay;
+  var saturdayStartDateWeek;
+  var saturdayEndDateWeek;
+  var saturdayUid;
+
+  var sundaySteps;
+  var sundayReadTime;
+  var sundayStartDateDay;
+  var sundayEndDateDay;
+  var sundayStartDateWeek;
+  var sundayEndDateWeek;
+  var sundayUid;
+
+  bool isMon = false;
+  bool isTue = false;
+  bool isWed = false;
+  bool isThu = false;
+  bool isFri = false;
+  bool isSat = false;
+  bool isSun = false;
+
+  var hours = "0";
+  var readTime = "0";
+  var seconds = "0";
+  var steps = "0";
+
+  bool isTextColorMon = false;
+  bool isTextColorTue = false;
+  bool isTextColorWed = false;
+  bool isTextColorThu = false;
+  bool isTextColorFri = false;
+  bool isTextColorSat = false;
+  bool isTextColorSun = false;
+
+  int fetchedSplittedHoursMondayReadTime;
+  int fetchedSplittedMinutesMondayReadTime;
+  int fetchedSplittedSecondsMondayReadTime;
+
+  int fetchedSplittedHoursTuesdayReadTime;
+  int fetchedSplittedMinutesTuesdayReadTime;
+  int fetchedSplittedSecondsTuesdayReadTime;
+
+  int fetchedSplittedHoursWednesdayReadTime;
+  int fetchedSplittedMinutesWednesdayReadTime;
+  int fetchedSplittedSecondsWednesdayReadTime;
+
+  int fetchedSplittedHoursThursdayReadTime;
+  int fetchedSplittedMinutesThursdayReadTime;
+  int fetchedSplittedSecondsThursdayReadTime;
+
+  int fetchedSplittedHoursFridayReadTime;
+  int fetchedSplittedMinutesFridayReadTime;
+  int fetchedSplittedSecondsFridayReadTime;
+
+  int fetchedSplittedHoursSaturdayReadTime;
+  int fetchedSplittedMinutesSaturdayReadTime;
+  int fetchedSplittedSecondsSaturdayReadTime;
+
+  int fetchedSplittedHoursSundayReadTime;
+  int fetchedSplittedMinutesSundayReadTime;
+  int fetchedSplittedSecondsSundayReadTime;
+
+  // splitReadTimeData() {
+  //   //! Splitting String by :
+  //   List<String> splittedMondayReadTime = mondayReadTime.split(':');
+  //   fetchedSplittedHoursMondayReadTime = int.parse(splittedMondayReadTime[0]);
+  //   fetchedSplittedMinutesMondayReadTime = int.parse(splittedMondayReadTime[1]);
+  //   fetchedSplittedSecondsMondayReadTime = int.parse(splittedMondayReadTime[2]);
+
+  //   //! Splitting String by :
+  //   List<String> splittedTuesdayReadTime = tuesdayReadTime.split(':');
+  //   fetchedSplittedHoursTuesdayReadTime = int.parse(splittedTuesdayReadTime[0]);
+  //   fetchedSplittedMinutesTuesdayReadTime =
+  //       int.parse(splittedTuesdayReadTime[1]);
+  //   fetchedSplittedSecondsTuesdayReadTime =
+  //       int.parse(splittedTuesdayReadTime[2]);
+
+  //   //! Splitting String by :
+  //   List<String> splittedWednessdayReadTime = wednesdayReadTime.split(':');
+  //   fetchedSplittedHoursWednesdayReadTime =
+  //       int.parse(splittedWednessdayReadTime[0]);
+  //   fetchedSplittedMinutesWednesdayReadTime =
+  //       int.parse(splittedWednessdayReadTime[1]);
+  //   fetchedSplittedSecondsWednesdayReadTime =
+  //       int.parse(splittedWednessdayReadTime[2]);
+
+  //   //! Splitting String by :
+  //   List<String> splittedThursdayReadTime = thursdayReadTime.split(':');
+  //   fetchedSplittedHoursThursdayReadTime =
+  //       int.parse(splittedThursdayReadTime[0]);
+  //   fetchedSplittedMinutesThursdayReadTime =
+  //       int.parse(splittedThursdayReadTime[1]);
+  //   fetchedSplittedSecondsThursdayReadTime =
+  //       int.parse(splittedThursdayReadTime[2]);
+
+  //   //! Splitting String by :
+  //   List<String> splittedFridayReadTime = fridayReadTime.split(':');
+  //   fetchedSplittedHoursFridayReadTime = int.parse(splittedFridayReadTime[0]);
+  //   fetchedSplittedMinutesFridayReadTime = int.parse(splittedFridayReadTime[1]);
+  //   fetchedSplittedSecondsFridayReadTime = int.parse(splittedFridayReadTime[2]);
+
+  //   //! Splitting String by :
+  //   List<String> splittedSaturdayReadTime = saturdayReadTime.split(':');
+  //   fetchedSplittedHoursSaturdayReadTime =
+  //       int.parse(splittedSaturdayReadTime[0]);
+  //   fetchedSplittedMinutesSaturdayReadTime =
+  //       int.parse(splittedSaturdayReadTime[1]);
+  //   fetchedSplittedSecondsSaturdayReadTime =
+  //       int.parse(splittedSaturdayReadTime[2]);
+
+  //   //! Splitting String by :
+  //   List<String> splittedSundayReadTime = sundayReadTime.split(':');
+  //   fetchedSplittedHoursSundayReadTime = int.parse(splittedSundayReadTime[0]);
+  //   fetchedSplittedMinutesSundayReadTime = int.parse(splittedSundayReadTime[1]);
+  //   fetchedSplittedSecondsSundayReadTime = int.parse(splittedSundayReadTime[2]);
+
+  //   setState(() {});
+  // }
+
+  void controlDisplayData() {
+    //! Logic to display in minutes: Hours * 60 + Minutes = Total Minutes
+    if (isMon == true) {
+      if (mondayUid != null) {
+        //! Splitting String by :
+        List<String> splittedMondayReadTime = mondayReadTime.split(':');
+        fetchedSplittedHoursMondayReadTime =
+            int.parse(splittedMondayReadTime[0]);
+        fetchedSplittedMinutesMondayReadTime =
+            int.parse(splittedMondayReadTime[1]);
+        fetchedSplittedSecondsMondayReadTime =
+            int.parse(splittedMondayReadTime[2]);
+        setState(() {
+          int totalMinutesDay = fetchedSplittedHoursMondayReadTime * 60 +
+              fetchedSplittedMinutesMondayReadTime;
+          readTime = totalMinutesDay.toString();
+          steps = mondaySteps.toString();
+        });
+      } else {
+        setState(() {});
+      }
+    } else if (isTue == true) {
+      if (tuesdayUid != null) {
+        //! Splitting String by :
+        List<String> splittedTuesdayReadTime = tuesdayReadTime.split(':');
+        fetchedSplittedHoursTuesdayReadTime =
+            int.parse(splittedTuesdayReadTime[0]);
+        fetchedSplittedMinutesTuesdayReadTime =
+            int.parse(splittedTuesdayReadTime[1]);
+        fetchedSplittedSecondsTuesdayReadTime =
+            int.parse(splittedTuesdayReadTime[2]);
+        setState(() {
+          int totalMinutesDay = fetchedSplittedHoursTuesdayReadTime * 60 +
+              fetchedSplittedMinutesTuesdayReadTime;
+          readTime = totalMinutesDay.toString();
+          steps = tuesdaySteps.toString();
+        });
+      } else {
+        setState(() {});
+      }
+    } else if (isWed == true) {
+      if (wednesdayUid != null) {
+        //! Splitting String by :
+        List<String> splittedWednessdayReadTime = wednesdayReadTime.split(':');
+        fetchedSplittedHoursWednesdayReadTime =
+            int.parse(splittedWednessdayReadTime[0]);
+        fetchedSplittedMinutesWednesdayReadTime =
+            int.parse(splittedWednessdayReadTime[1]);
+        fetchedSplittedSecondsWednesdayReadTime =
+            int.parse(splittedWednessdayReadTime[2]);
+        setState(() {
+          int totalMinutesDay = fetchedSplittedHoursWednesdayReadTime * 60 +
+              fetchedSplittedMinutesWednesdayReadTime;
+          readTime = totalMinutesDay.toString();
+          steps = wednesdaySteps.toString();
+        });
+      } else {
+        setState(() {});
+      }
+    } else if (isThu == true) {
+      if (thursdayUid != null) {
+        //! Splitting String by :
+        List<String> splittedThursdayReadTime = thursdayReadTime.split(':');
+        fetchedSplittedHoursThursdayReadTime =
+            int.parse(splittedThursdayReadTime[0]);
+        fetchedSplittedMinutesThursdayReadTime =
+            int.parse(splittedThursdayReadTime[1]);
+        fetchedSplittedSecondsThursdayReadTime =
+            int.parse(splittedThursdayReadTime[2]);
+        setState(() {
+          int totalMinutesDay = fetchedSplittedHoursThursdayReadTime * 60 +
+              fetchedSplittedMinutesThursdayReadTime;
+          readTime = totalMinutesDay.toString();
+          steps = thursdaySteps.toString();
+        });
+      } else {
+        setState(() {});
+      }
+    } else if (isFri == true) {
+      if (fridayUid != null) {
+        //! Splitting String by :
+        List<String> splittedFridayReadTime = fridayReadTime.split(':');
+        fetchedSplittedHoursFridayReadTime =
+            int.parse(splittedFridayReadTime[0]);
+        fetchedSplittedMinutesFridayReadTime =
+            int.parse(splittedFridayReadTime[1]);
+        fetchedSplittedSecondsFridayReadTime =
+            int.parse(splittedFridayReadTime[2]);
+        setState(() {
+          int totalMinutesDay = fetchedSplittedHoursFridayReadTime * 60 +
+              fetchedSplittedMinutesFridayReadTime;
+          readTime = totalMinutesDay.toString();
+          steps = fridaySteps.toString();
+        });
+      } else {
+        setState(() {});
+      }
+    } else if (isSat == true) {
+      if (saturdayUid != null) {
+        //! Splitting String by :
+        List<String> splittedSaturdayReadTime = saturdayReadTime.split(':');
+        fetchedSplittedHoursSaturdayReadTime =
+            int.parse(splittedSaturdayReadTime[0]);
+        fetchedSplittedMinutesSaturdayReadTime =
+            int.parse(splittedSaturdayReadTime[1]);
+        fetchedSplittedSecondsSaturdayReadTime =
+            int.parse(splittedSaturdayReadTime[2]);
+
+        setState(() {
+          int totalMinutesDay = fetchedSplittedHoursSaturdayReadTime * 60 +
+              fetchedSplittedMinutesSaturdayReadTime;
+          readTime = totalMinutesDay.toString();
+          steps = saturdaySteps.toString();
+        });
+      } else {
+        setState(() {});
+      }
+    } else if (isSun == true) {
+      if (sundayUid != null) {
+        //! Splitting String by :
+        List<String> splittedSundayReadTime = sundayReadTime.split(':');
+        fetchedSplittedHoursSundayReadTime =
+            int.parse(splittedSundayReadTime[0]);
+        fetchedSplittedMinutesSundayReadTime =
+            int.parse(splittedSundayReadTime[1]);
+        fetchedSplittedSecondsSundayReadTime =
+            int.parse(splittedSundayReadTime[2]);
+        setState(() {
+          int totalMinutesDay = fetchedSplittedHoursSundayReadTime * 60 +
+              fetchedSplittedMinutesSundayReadTime;
+          readTime = totalMinutesDay.toString();
+          steps = sundaySteps.toString();
+        });
+      } else {
+        setState(() {});
+      }
+    }
+  }
+
+  // ignore: missing_return
+  Future<DocumentSnapshot> fetchWeekDataFromFirebase() async {
+    final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+    await _fireStore.collection("MondayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          mondaySteps = result.data()['Steps'];
+          mondayReadTime = result.data()['ReadTime'];
+          mondayStartDateDay = result.data()['StartDateDay'];
+          mondayEndDateDay = result.data()['EndDateDay'];
+          mondayStartDateWeek = result.data()['StartDateWeek'];
+          mondayEndDateWeek = result.data()['EndDateWeek'];
+          mondayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("TuesdayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          tuesdaySteps = result.data()['Steps'];
+          tuesdayReadTime = result.data()['ReadTime'];
+          tuesdayStartDateDay = result.data()['StartDateDay'];
+          tuesdayEndDateDay = result.data()['EndDateDay'];
+          tuesdayStartDateWeek = result.data()['StartDateWeek'];
+          tuesdayEndDateWeek = result.data()['EndDateWeek'];
+          tuesdayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("WednesdayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          wednesdaySteps = result.data()['Steps'];
+          wednesdayReadTime = result.data()['ReadTime'];
+          wednesdayStartDateDay = result.data()['StartDateDay'];
+          wednesdayEndDateDay = result.data()['EndDateDay'];
+          wednesdayStartDateWeek = result.data()['StartDateWeek'];
+          wednesdayEndDateWeek = result.data()['EndDateWeek'];
+          wednesdayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("ThursdayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          thursdaySteps = result.data()['Steps'];
+          thursdayReadTime = result.data()['ReadTime'];
+          thursdayStartDateDay = result.data()['StartDateDay'];
+          thursdayEndDateDay = result.data()['EndDateDay'];
+          thursdayStartDateWeek = result.data()['StartDateWeek'];
+          thursdayEndDateWeek = result.data()['EndDateWeek'];
+          thursdayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("FridayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          fridaySteps = result.data()['Steps'];
+          fridayReadTime = result.data()['ReadTime'];
+          fridayStartDateDay = result.data()['StartDateDay'];
+          fridayEndDateDay = result.data()['EndDateDay'];
+          fridayStartDateWeek = result.data()['StartDateWeek'];
+          fridayEndDateWeek = result.data()['EndDateWeek'];
+          fridayUid = result.data()['Uid'];
+        }
+      }
+    });
+    await _fireStore.collection("SaturdayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+          saturdaySteps = result.data()['Steps'];
+          saturdayReadTime = result.data()['ReadTime'];
+          saturdayStartDateDay = result.data()['StartDateDay'];
+          saturdayEndDateDay = result.data()['EndDateDay'];
+          saturdayStartDateWeek = result.data()['StartDateWeek'];
+          saturdayEndDateWeek = result.data()['EndDateWeek'];
+          saturdayUid = result.data()['Uid'];
+
+          //! Spliiting Data fetched from Firebase
+          //! Splitting String by :
+          List<String> splittedSaturdayReadTime = saturdayReadTime.split(':');
+          fetchedSplittedHoursSaturdayReadTime =
+              int.parse(splittedSaturdayReadTime[0]);
+          fetchedSplittedMinutesSaturdayReadTime =
+              int.parse(splittedSaturdayReadTime[1]);
+          fetchedSplittedSecondsSaturdayReadTime =
+              int.parse(splittedSaturdayReadTime[2]);
+
+          int totalMinutesDay = fetchedSplittedHoursSaturdayReadTime * 60 +
+              fetchedSplittedMinutesSaturdayReadTime;
+
+          if (mounted) {
+            setState(() {
+              //! Setting default Sat values
+              readTime = totalMinutesDay.toString();
+              steps = saturdaySteps.toString();
+              isTextColorMon = false;
+              isTextColorTue = false;
+              isTextColorWed = false;
+              isTextColorThu = false;
+              isTextColorFri = false;
+              isTextColorSat = true;
+              isTextColorSun = false;
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              //! Setting default week values
+              readTime = "0";
+              steps = "0";
+              isTextColorMon = false;
+              isTextColorTue = false;
+              isTextColorWed = false;
+              isTextColorThu = false;
+              isTextColorFri = false;
+              isTextColorSat = true;
+              isTextColorSun = false;
+            });
+          }
+        }
+      }
+    });
+    await _fireStore.collection("SundayData").get().then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        sundaySteps = result.data()['Steps'];
+        sundayReadTime = result.data()['ReadTime'];
+        sundayStartDateDay = result.data()['StartDateDay'];
+        sundayEndDateDay = result.data()['EndDateDay'];
+        sundayStartDateWeek = result.data()['StartDateWeek'];
+        sundayEndDateWeek = result.data()['EndDateWeek'];
+        sundayUid = result.data()['Uid'];
+      }
+    });
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    fetchWeekDataFromFirebase();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  // Future fetchData() async {
+  //   // //! Getting read Data and wait for it to fetch the data from firebase than run other things
+  //   await fetchWeekDataFromFirebase();
+  //   if (saturdayEndDateWeek = null) {
+  //     //! Spliiting Data fetched from Firebase
+  //     splitReadTimeData();
+  //     int totalMinutesDay = fetchedSplittedHoursSaturdayReadTime * 60 +
+  //         fetchedSplittedMinutesSaturdayReadTime;
+
+  //     setState(() {
+  //       //! Setting default Sat values
+  //       readTime = totalMinutesDay.toString();
+  //       steps = saturdaySteps.toString();
+  //       isTextColorMon = false;
+  //       isTextColorTue = false;
+  //       isTextColorWed = false;
+  //       isTextColorThu = false;
+  //       isTextColorFri = false;
+  //       isTextColorSat = true;
+  //       isTextColorSun = false;
+  //     });
+
+  //     //! Show data
+  //     // controlDisplayData();
+  //   } else {
+  //     setState(() {
+  //       //! Setting default week values
+  //       readTime = "0";
+  //       steps = "0";
+  //       isTextColorMon = false;
+  //       isTextColorTue = false;
+  //       isTextColorWed = false;
+  //       isTextColorThu = false;
+  //       isTextColorFri = false;
+  //       isTextColorSat = true;
+  //       isTextColorSun = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -77,77 +571,217 @@ class Homescreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          isMon = false;
+                          isTue = false;
+                          isWed = false;
+                          isThu = false;
+                          isFri = false;
+                          isSat = true;
+                          isSun = false;
+                          isTextColorMon = false;
+                          isTextColorTue = false;
+                          isTextColorWed = false;
+                          isTextColorThu = false;
+                          isTextColorFri = false;
+                          isTextColorSat = true;
+                          isTextColorSun = false;
+                        });
+                        controlDisplayData();
+                      },
                       child: Text(
                         "Sat",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: isTextColorSat
+                              ? Colors.white
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          isMon = false;
+                          isTue = false;
+                          isWed = false;
+                          isThu = false;
+                          isFri = false;
+                          isSat = false;
+                          isSun = true;
+                          isTextColorMon = false;
+                          isTextColorTue = false;
+                          isTextColorWed = false;
+                          isTextColorThu = false;
+                          isTextColorFri = false;
+                          isTextColorSat = false;
+                          isTextColorSun = true;
+                        });
+                        controlDisplayData();
+                      },
                       child: Text(
                         "Sun",
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: isTextColorSun
+                              ? Colors.white
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          isMon = true;
+                          isTue = false;
+                          isWed = false;
+                          isThu = false;
+                          isFri = false;
+                          isSat = false;
+                          isSun = false;
+                          isTextColorMon = true;
+                          isTextColorTue = false;
+                          isTextColorWed = false;
+                          isTextColorThu = false;
+                          isTextColorFri = false;
+                          isTextColorSat = false;
+                          isTextColorSun = false;
+                        });
+                        controlDisplayData();
+                      },
                       child: Text(
                         "Mon",
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: isTextColorMon
+                              ? Colors.white
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          isMon = false;
+                          isTue = true;
+                          isWed = false;
+                          isThu = false;
+                          isFri = false;
+                          isSat = false;
+                          isSun = false;
+                          isTextColorMon = false;
+                          isTextColorTue = true;
+                          isTextColorWed = false;
+                          isTextColorThu = false;
+                          isTextColorFri = false;
+                          isTextColorSat = false;
+                          isTextColorSun = false;
+                        });
+                        controlDisplayData();
+                      },
                       child: Text(
                         "Tue",
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: isTextColorTue
+                              ? Colors.white
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          isMon = false;
+                          isTue = false;
+                          isWed = true;
+                          isThu = false;
+                          isFri = false;
+                          isSat = false;
+                          isSun = false;
+                          isTextColorMon = false;
+                          isTextColorTue = false;
+                          isTextColorWed = true;
+                          isTextColorThu = false;
+                          isTextColorFri = false;
+                          isTextColorSat = false;
+                          isTextColorSun = false;
+                        });
+                        controlDisplayData();
+                      },
                       child: Text(
                         "Wed",
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: isTextColorWed
+                              ? Colors.white
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          isMon = false;
+                          isTue = false;
+                          isWed = false;
+                          isThu = true;
+                          isFri = false;
+                          isSat = false;
+                          isSun = false;
+                          isTextColorMon = false;
+                          isTextColorTue = false;
+                          isTextColorWed = false;
+                          isTextColorThu = true;
+                          isTextColorFri = false;
+                          isTextColorSat = false;
+                          isTextColorSun = false;
+                        });
+                        controlDisplayData();
+                      },
                       child: Text(
                         "Thu",
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: isTextColorThu
+                              ? Colors.white
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          isMon = false;
+                          isTue = false;
+                          isWed = false;
+                          isThu = false;
+                          isFri = true;
+                          isSat = false;
+                          isSun = false;
+                          isTextColorMon = false;
+                          isTextColorTue = false;
+                          isTextColorWed = false;
+                          isTextColorThu = false;
+                          isTextColorFri = true;
+                          isTextColorSat = false;
+                          isTextColorSun = false;
+                        });
+                        controlDisplayData();
+                      },
                       child: Text(
                         "Fri",
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: isTextColorFri
+                              ? Colors.white
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
@@ -184,7 +818,7 @@ class Homescreen extends StatelessWidget {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      "3m",
+                                      "$readTime m",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -260,7 +894,7 @@ class Homescreen extends StatelessWidget {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      "1500",
+                                      double.parse(steps).round().toString(),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,
