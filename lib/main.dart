@@ -5,12 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:steps_app/Provider/home_provider.dart';
 import 'package:steps_app/Provider/theme_provider.dart';
+import 'package:steps_app/Screens/AllDonationsScreen.dart';
+import 'package:steps_app/Screens/CardDetails.dart';
 import 'package:steps_app/Screens/Login.dart';
 import 'package:steps_app/Screens/Mainscreen.dart';
+import 'package:steps_app/Screens/Storemain.dart';
 import 'package:steps_app/Screens/usernamescreen.dart';
 import 'package:steps_app/theme.dart';
 
+import 'Screens/AllBidsScreen.dart';
+import 'Screens/AllBooksCategoriesScreen.dart';
+import 'Screens/AllCards.dart';
+import 'Screens/AllParticipantsScreen.dart';
 import 'Screens/HomePage.dart';
+import 'Screens/SelectedStoreCategoryScreen.dart';
+import 'Screens/SelectedWidgetScreen.dart';
+import 'Screens/SelectedBookCategoryScreen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,8 +33,20 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  static BuildContext appContext;
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    MyApp.appContext = context;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -44,7 +66,7 @@ class MyApp extends StatelessWidget {
         home: FirebaseAuth.instance.currentUser != null
             ? HomePage()
             : MainSceeen(),
-        // home: HomePage(),
+        // home: AllBidsScreen(),
       ),
     );
   }

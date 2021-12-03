@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:steps_app/Screens/AllDonationsScreen.dart';
+import 'package:steps_app/Screens/AllParticipantsScreen.dart';
 import 'package:steps_app/Widgets/Button.dart';
 import 'package:steps_app/theme.dart';
 
 import '../theme.dart';
+import 'AllBidsScreen.dart';
 
 class Homescreen extends StatefulWidget {
   //const Homescreen({Key? key}) : super(key: key);
@@ -1526,8 +1529,11 @@ class _HomescreenState extends State<Homescreen> {
                                   child: Container(
                                     child: InkWell(
                                       onTap: () {
-                                        // Navigator.push(context,
-                                        //     MaterialPageRoute(builder: (context) => AllCards()));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AllDonationsScreen()));
                                       },
                                       child: Container(
                                         height: 222,
@@ -1816,8 +1822,21 @@ class _HomescreenState extends State<Homescreen> {
                                   child: Container(
                                     child: InkWell(
                                       onTap: () {
-                                        // Navigator.push(context,
-                                        //     MaterialPageRoute(builder: (context) => AllCards()));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    // AllParticipantsScreen(
+                                                    //   isShowParticipantsList:
+                                                    //       true,
+                                                    //   appbarTitle:
+                                                    //       "All Participants",
+                                                    //   totalParticipants: "10",
+                                                    //   listViewItemCount: 5,
+                                                    //   participantName: "Ahmed",
+                                                    //   participantCoins: "10",
+                                                    // )));
+                                                    AllBidsScreen()));
                                       },
                                       child: Container(
                                         height: 222,

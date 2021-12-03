@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/provider.dart';
 import 'package:steps_app/Provider/home_provider.dart';
+import 'package:steps_app/Screens/AllBooksCategoriesScreen.dart';
 import 'package:steps_app/Screens/BookScreen.dart';
 import 'package:steps_app/Widgets/Button.dart';
 import 'package:steps_app/Widgets/LineChart.dart';
@@ -337,208 +338,229 @@ class _ReadmainscreenState extends State<Readmainscreen> {
       await _fireStore.collection("MondayData").get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-            setState(() {
-              mondaySteps = result.data()['Steps'];
-              mondayReadTime = result.data()['ReadTime'];
-              mondayStartDateDay = result.data()['StartDateDay'];
-              mondayEndDateDay = result.data()['EndDateDay'];
-              mondayStartDateWeek = result.data()['StartDateWeek'];
-              mondayEndDateWeek = result.data()['EndDateWeek'];
-              mondayUid = result.data()['Uid'];
-            });
+            if (mounted) {
+              setState(() {
+                mondaySteps = result.data()['Steps'];
+                mondayReadTime = result.data()['ReadTime'];
+                mondayStartDateDay = result.data()['StartDateDay'];
+                mondayEndDateDay = result.data()['EndDateDay'];
+                mondayStartDateWeek = result.data()['StartDateWeek'];
+                mondayEndDateWeek = result.data()['EndDateWeek'];
+                mondayUid = result.data()['Uid'];
+              });
+            }
           }
         }
       });
       await _fireStore.collection("TuesdayData").get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-            setState(() {
-              tuesdaySteps = result.data()['Steps'];
-              tuesdayReadTime = result.data()['ReadTime'];
-              tuesdayStartDateDay = result.data()['StartDateDay'];
-              tuesdayEndDateDay = result.data()['EndDateDay'];
-              tuesdayStartDateWeek = result.data()['StartDateWeek'];
-              tuesdayEndDateWeek = result.data()['EndDateWeek'];
-              tuesdayUid = result.data()['Uid'];
-            });
+            if (mounted) {
+              setState(() {
+                tuesdaySteps = result.data()['Steps'];
+                tuesdayReadTime = result.data()['ReadTime'];
+                tuesdayStartDateDay = result.data()['StartDateDay'];
+                tuesdayEndDateDay = result.data()['EndDateDay'];
+                tuesdayStartDateWeek = result.data()['StartDateWeek'];
+                tuesdayEndDateWeek = result.data()['EndDateWeek'];
+                tuesdayUid = result.data()['Uid'];
+              });
+            }
           }
         }
       });
       await _fireStore.collection("WednesdayData").get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-            setState(() {
-              wednesdaySteps = result.data()['Steps'];
-              wednesdayReadTime = result.data()['ReadTime'];
-              wednesdayStartDateDay = result.data()['StartDateDay'];
-              wednesdayEndDateDay = result.data()['EndDateDay'];
-              wednesdayStartDateWeek = result.data()['StartDateWeek'];
-              wednesdayEndDateWeek = result.data()['EndDateWeek'];
-              wednesdayUid = result.data()['Uid'];
-            });
+            if (mounted) {
+              setState(() {
+                wednesdaySteps = result.data()['Steps'];
+                wednesdayReadTime = result.data()['ReadTime'];
+                wednesdayStartDateDay = result.data()['StartDateDay'];
+                wednesdayEndDateDay = result.data()['EndDateDay'];
+                wednesdayStartDateWeek = result.data()['StartDateWeek'];
+                wednesdayEndDateWeek = result.data()['EndDateWeek'];
+                wednesdayUid = result.data()['Uid'];
+              });
+            }
           }
         }
       });
       await _fireStore.collection("ThursdayData").get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-            setState(() {
-              thursdaySteps = result.data()['Steps'];
-              thursdayReadTime = result.data()['ReadTime'];
-              thursdayStartDateDay = result.data()['StartDateDay'];
-              thursdayEndDateDay = result.data()['EndDateDay'];
-              thursdayStartDateWeek = result.data()['StartDateWeek'];
-              thursdayEndDateWeek = result.data()['EndDateWeek'];
-              thursdayUid = result.data()['Uid'];
-            });
+            if (mounted) {
+              setState(() {
+                thursdaySteps = result.data()['Steps'];
+                thursdayReadTime = result.data()['ReadTime'];
+                thursdayStartDateDay = result.data()['StartDateDay'];
+                thursdayEndDateDay = result.data()['EndDateDay'];
+                thursdayStartDateWeek = result.data()['StartDateWeek'];
+                thursdayEndDateWeek = result.data()['EndDateWeek'];
+                thursdayUid = result.data()['Uid'];
+              });
+            }
           }
         }
       });
       await _fireStore.collection("FridayData").get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-            setState(() {
-              fridaySteps = result.data()['Steps'];
-              fridayReadTime = result.data()['ReadTime'];
-              fridayStartDateDay = result.data()['StartDateDay'];
-              fridayEndDateDay = result.data()['EndDateDay'];
-              fridayStartDateWeek = result.data()['StartDateWeek'];
-              fridayEndDateWeek = result.data()['EndDateWeek'];
-              fridayUid = result.data()['Uid'];
-            });
+            if (mounted) {
+              setState(() {
+                fridaySteps = result.data()['Steps'];
+                fridayReadTime = result.data()['ReadTime'];
+                fridayStartDateDay = result.data()['StartDateDay'];
+                fridayEndDateDay = result.data()['EndDateDay'];
+                fridayStartDateWeek = result.data()['StartDateWeek'];
+                fridayEndDateWeek = result.data()['EndDateWeek'];
+                fridayUid = result.data()['Uid'];
+              });
+            }
           }
         }
       });
       await _fireStore.collection("SaturdayData").get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-            setState(() {
-              saturdaySteps = result.data()['Steps'];
-              saturdayReadTime = result.data()['ReadTime'];
-              saturdayStartDateDay = result.data()['StartDateDay'];
-              saturdayEndDateDay = result.data()['EndDateDay'];
-              saturdayStartDateWeek = result.data()['StartDateWeek'];
-              saturdayEndDateWeek = result.data()['EndDateWeek'];
-              saturdayUid = result.data()['Uid'];
-            });
+            if (mounted) {
+              setState(() {
+                saturdaySteps = result.data()['Steps'];
+                saturdayReadTime = result.data()['ReadTime'];
+                saturdayStartDateDay = result.data()['StartDateDay'];
+                saturdayEndDateDay = result.data()['EndDateDay'];
+                saturdayStartDateWeek = result.data()['StartDateWeek'];
+                saturdayEndDateWeek = result.data()['EndDateWeek'];
+                saturdayUid = result.data()['Uid'];
+              });
+            }
           }
         }
       });
       await _fireStore.collection("SundayData").get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-            setState(() {
-              sundaySteps = result.data()['Steps'];
-              sundayReadTime = result.data()['ReadTime'];
-              sundayStartDateDay = result.data()['StartDateDay'];
-              sundayEndDateDay = result.data()['EndDateDay'];
-              sundayStartDateWeek = result.data()['StartDateWeek'];
-              sundayEndDateWeek = result.data()['EndDateWeek'];
-              sundayUid = result.data()['Uid'];
-            });
+            if (mounted) {
+              setState(() {
+                sundaySteps = result.data()['Steps'];
+                sundayReadTime = result.data()['ReadTime'];
+                sundayStartDateDay = result.data()['StartDateDay'];
+                sundayEndDateDay = result.data()['EndDateDay'];
+                sundayStartDateWeek = result.data()['StartDateWeek'];
+                sundayEndDateWeek = result.data()['EndDateWeek'];
+                sundayUid = result.data()['Uid'];
+              });
+            }
           }
         }
       });
 
       //! Splitting String by :
-      List<String> splittedMondayReadTime = mondayReadTime.split(':');
-      fetchedSplittedHoursMondayReadTime = int.parse(splittedMondayReadTime[0]);
-      fetchedSplittedMinutesMondayReadTime =
-          int.parse(splittedMondayReadTime[1]);
-      fetchedSplittedSecondsMondayReadTime =
-          int.parse(splittedMondayReadTime[2]);
+      if (mounted) {
+        List<String> splittedMondayReadTime = mondayReadTime.split(':');
+        fetchedSplittedHoursMondayReadTime =
+            int.parse(splittedMondayReadTime[0]);
+        fetchedSplittedMinutesMondayReadTime =
+            int.parse(splittedMondayReadTime[1]);
+        fetchedSplittedSecondsMondayReadTime =
+            int.parse(splittedMondayReadTime[2]);
 
-      //! Splitting String by :
-      List<String> splittedTuesdayReadTime = tuesdayReadTime.split(':');
-      fetchedSplittedHoursTuesdayReadTime =
-          int.parse(splittedTuesdayReadTime[0]);
-      fetchedSplittedMinutesTuesdayReadTime =
-          int.parse(splittedTuesdayReadTime[1]);
-      fetchedSplittedSecondsTuesdayReadTime =
-          int.parse(splittedTuesdayReadTime[2]);
+        //! Splitting String by :
+        List<String> splittedTuesdayReadTime = tuesdayReadTime.split(':');
+        fetchedSplittedHoursTuesdayReadTime =
+            int.parse(splittedTuesdayReadTime[0]);
+        fetchedSplittedMinutesTuesdayReadTime =
+            int.parse(splittedTuesdayReadTime[1]);
+        fetchedSplittedSecondsTuesdayReadTime =
+            int.parse(splittedTuesdayReadTime[2]);
 
-      //! Splitting String by :
-      List<String> splittedWednessdayReadTime = wednesdayReadTime.split(':');
-      fetchedSplittedHoursWednesdayReadTime =
-          int.parse(splittedWednessdayReadTime[0]);
-      fetchedSplittedMinutesWednesdayReadTime =
-          int.parse(splittedWednessdayReadTime[1]);
-      fetchedSplittedSecondsWednesdayReadTime =
-          int.parse(splittedWednessdayReadTime[2]);
+        //! Splitting String by :
+        List<String> splittedWednessdayReadTime = wednesdayReadTime.split(':');
+        fetchedSplittedHoursWednesdayReadTime =
+            int.parse(splittedWednessdayReadTime[0]);
+        fetchedSplittedMinutesWednesdayReadTime =
+            int.parse(splittedWednessdayReadTime[1]);
+        fetchedSplittedSecondsWednesdayReadTime =
+            int.parse(splittedWednessdayReadTime[2]);
 
-      //! Splitting String by :
-      List<String> splittedThursdayReadTime = thursdayReadTime.split(':');
-      fetchedSplittedHoursThursdayReadTime =
-          int.parse(splittedThursdayReadTime[0]);
-      fetchedSplittedMinutesThursdayReadTime =
-          int.parse(splittedThursdayReadTime[1]);
-      fetchedSplittedSecondsThursdayReadTime =
-          int.parse(splittedThursdayReadTime[2]);
+        //! Splitting String by :
+        List<String> splittedThursdayReadTime = thursdayReadTime.split(':');
+        fetchedSplittedHoursThursdayReadTime =
+            int.parse(splittedThursdayReadTime[0]);
+        fetchedSplittedMinutesThursdayReadTime =
+            int.parse(splittedThursdayReadTime[1]);
+        fetchedSplittedSecondsThursdayReadTime =
+            int.parse(splittedThursdayReadTime[2]);
 
-      //! Splitting String by :
-      List<String> splittedFridayReadTime = fridayReadTime.split(':');
-      fetchedSplittedHoursFridayReadTime = int.parse(splittedFridayReadTime[0]);
-      fetchedSplittedMinutesFridayReadTime =
-          int.parse(splittedFridayReadTime[1]);
-      fetchedSplittedSecondsFridayReadTime =
-          int.parse(splittedFridayReadTime[2]);
+        //! Splitting String by :
+        List<String> splittedFridayReadTime = fridayReadTime.split(':');
+        fetchedSplittedHoursFridayReadTime =
+            int.parse(splittedFridayReadTime[0]);
+        fetchedSplittedMinutesFridayReadTime =
+            int.parse(splittedFridayReadTime[1]);
+        fetchedSplittedSecondsFridayReadTime =
+            int.parse(splittedFridayReadTime[2]);
 
-      //! Splitting String by :
-      List<String> splittedSaturdayReadTime = saturdayReadTime.split(':');
-      fetchedSplittedHoursSaturdayReadTime =
-          int.parse(splittedSaturdayReadTime[0]);
-      fetchedSplittedMinutesSaturdayReadTime =
-          int.parse(splittedSaturdayReadTime[1]);
-      fetchedSplittedSecondsSaturdayReadTime =
-          int.parse(splittedSaturdayReadTime[2]);
+        //! Splitting String by :
+        List<String> splittedSaturdayReadTime = saturdayReadTime.split(':');
+        fetchedSplittedHoursSaturdayReadTime =
+            int.parse(splittedSaturdayReadTime[0]);
+        fetchedSplittedMinutesSaturdayReadTime =
+            int.parse(splittedSaturdayReadTime[1]);
+        fetchedSplittedSecondsSaturdayReadTime =
+            int.parse(splittedSaturdayReadTime[2]);
 
-      //! Splitting String by :
-      List<String> splittedSundayReadTime = sundayReadTime.split(':');
-      fetchedSplittedHoursSundayReadTime = int.parse(splittedSundayReadTime[0]);
-      fetchedSplittedMinutesSundayReadTime =
-          int.parse(splittedSundayReadTime[1]);
-      fetchedSplittedSecondsSundayReadTime =
-          int.parse(splittedSundayReadTime[2]);
+        //! Splitting String by :
+        List<String> splittedSundayReadTime = sundayReadTime.split(':');
+        fetchedSplittedHoursSundayReadTime =
+            int.parse(splittedSundayReadTime[0]);
+        fetchedSplittedMinutesSundayReadTime =
+            int.parse(splittedSundayReadTime[1]);
+        fetchedSplittedSecondsSundayReadTime =
+            int.parse(splittedSundayReadTime[2]);
 
-      //! Logic to display in minutes: Hours * 60 + Minutes = Total Minutes
-      double totalMinutesMonday = (fetchedSplittedHoursMondayReadTime * 60 +
-              fetchedSplittedMinutesMondayReadTime)
-          .toDouble();
-      Provider.of<Homeprovider>(context, listen: false)
-          .mondayReadMinutesValue(totalMinutesMonday);
-      print("TotalMinutesMonday        " + totalMinutesMonday.toString());
-      double totalMinutesTuesday = (fetchedSplittedHoursTuesdayReadTime * 60 +
-              fetchedSplittedMinutesTuesdayReadTime)
-          .toDouble();
-      Provider.of<Homeprovider>(context, listen: false)
-          .tuesdayReadMinutesValue(totalMinutesTuesday);
-      double totalMinutesWednesday =
-          (fetchedSplittedHoursWednesdayReadTime * 60 +
-                  fetchedSplittedMinutesWednesdayReadTime)
-              .toDouble();
-      Provider.of<Homeprovider>(context, listen: false)
-          .wednesdayReadMinutesValue(totalMinutesWednesday);
-      double totalMinutesThursday = (fetchedSplittedHoursThursdayReadTime * 60 +
-              fetchedSplittedMinutesThursdayReadTime)
-          .toDouble();
-      Provider.of<Homeprovider>(context, listen: false)
-          .thursdayReadMinutesValue(totalMinutesThursday);
-      double totalMinutesFriday = (fetchedSplittedHoursFridayReadTime * 60 +
-              fetchedSplittedMinutesFridayReadTime)
-          .toDouble();
-      Provider.of<Homeprovider>(context, listen: false)
-          .fridayReadMinutesValue(totalMinutesFriday);
-      double totalMinutesSaturday = (fetchedSplittedHoursSaturdayReadTime * 60 +
-              fetchedSplittedMinutesSaturdayReadTime)
-          .toDouble();
-      Provider.of<Homeprovider>(context, listen: false)
-          .saturdayReadMinutesValue(totalMinutesSaturday);
-      double totalMinutesSunday = (fetchedSplittedHoursSundayReadTime * 60 +
-              fetchedSplittedMinutesSundayReadTime)
-          .toDouble();
-      Provider.of<Homeprovider>(context, listen: false)
-          .sundayReadMinutesValue(totalMinutesSunday);
-      setState(() {});
+        //! Logic to display in minutes: Hours * 60 + Minutes = Total Minutes
+        double totalMinutesMonday = (fetchedSplittedHoursMondayReadTime * 60 +
+                fetchedSplittedMinutesMondayReadTime)
+            .toDouble();
+        Provider.of<Homeprovider>(context, listen: false)
+            .mondayReadMinutesValue(totalMinutesMonday);
+        print("TotalMinutesMonday        " + totalMinutesMonday.toString());
+        double totalMinutesTuesday = (fetchedSplittedHoursTuesdayReadTime * 60 +
+                fetchedSplittedMinutesTuesdayReadTime)
+            .toDouble();
+        Provider.of<Homeprovider>(context, listen: false)
+            .tuesdayReadMinutesValue(totalMinutesTuesday);
+        double totalMinutesWednesday =
+            (fetchedSplittedHoursWednesdayReadTime * 60 +
+                    fetchedSplittedMinutesWednesdayReadTime)
+                .toDouble();
+        Provider.of<Homeprovider>(context, listen: false)
+            .wednesdayReadMinutesValue(totalMinutesWednesday);
+        double totalMinutesThursday =
+            (fetchedSplittedHoursThursdayReadTime * 60 +
+                    fetchedSplittedMinutesThursdayReadTime)
+                .toDouble();
+        Provider.of<Homeprovider>(context, listen: false)
+            .thursdayReadMinutesValue(totalMinutesThursday);
+        double totalMinutesFriday = (fetchedSplittedHoursFridayReadTime * 60 +
+                fetchedSplittedMinutesFridayReadTime)
+            .toDouble();
+        Provider.of<Homeprovider>(context, listen: false)
+            .fridayReadMinutesValue(totalMinutesFriday);
+        double totalMinutesSaturday =
+            (fetchedSplittedHoursSaturdayReadTime * 60 +
+                    fetchedSplittedMinutesSaturdayReadTime)
+                .toDouble();
+        Provider.of<Homeprovider>(context, listen: false)
+            .saturdayReadMinutesValue(totalMinutesSaturday);
+        double totalMinutesSunday = (fetchedSplittedHoursSundayReadTime * 60 +
+                fetchedSplittedMinutesSundayReadTime)
+            .toDouble();
+        Provider.of<Homeprovider>(context, listen: false)
+            .sundayReadMinutesValue(totalMinutesSunday);
+        setState(() {});
+      }
     }
   }
 
@@ -973,28 +995,28 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                           height: 10,
                         ),
                         ReadLineChart(
-                          // saturdaySteps:
-                          //     Provider.of<Homeprovider>(context, listen: false)
-                          //         .saturdayReadMinutes,
-                          // sundaySteps:
-                          //     Provider.of<Homeprovider>(context, listen: false)
-                          //         .sundayReadMinutes,
-                          // mondaySteps:
-                          //     Provider.of<Homeprovider>(context, listen: false)
-                          //         .mondayReadMinutes,
-                          // tuesdaySteps:
-                          //     Provider.of<Homeprovider>(context, listen: false)
-                          //         .tuesdayReadMinutes,
-                          // wednesdaySteps:
-                          //     Provider.of<Homeprovider>(context, listen: false)
-                          //         .wednesdayReadMinutes,
-                          // thursdaySteps:
-                          //     Provider.of<Homeprovider>(context, listen: false)
-                          //         .thursdayReadMinutes,
-                          // fridaySteps:
-                          //     Provider.of<Homeprovider>(context, listen: false)
-                          //         .fridayReadMinutes,
-                        ),
+                            // saturdaySteps:
+                            //     Provider.of<Homeprovider>(context, listen: false)
+                            //         .saturdayReadMinutes,
+                            // sundaySteps:
+                            //     Provider.of<Homeprovider>(context, listen: false)
+                            //         .sundayReadMinutes,
+                            // mondaySteps:
+                            //     Provider.of<Homeprovider>(context, listen: false)
+                            //         .mondayReadMinutes,
+                            // tuesdaySteps:
+                            //     Provider.of<Homeprovider>(context, listen: false)
+                            //         .tuesdayReadMinutes,
+                            // wednesdaySteps:
+                            //     Provider.of<Homeprovider>(context, listen: false)
+                            //         .wednesdayReadMinutes,
+                            // thursdaySteps:
+                            //     Provider.of<Homeprovider>(context, listen: false)
+                            //         .thursdayReadMinutes,
+                            // fridaySteps:
+                            //     Provider.of<Homeprovider>(context, listen: false)
+                            //         .fridayReadMinutes,
+                            ),
                         // Text(
                         //   "Lorem ipsum dolor sit amet, consetetur sadscing elitr, sed diam nonumy eirmod.",
                         //   textAlign: TextAlign.start,
@@ -1072,44 +1094,64 @@ class _ReadmainscreenState extends State<Readmainscreen> {
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Image.network(
-                                      "https://www.writersdigest.com/.image/t_share/MTcxMDY1ODEzMzk4NjYwMzU3/image-placeholder-title.jpg",
-                                      //fit: BoxFit.cover,
-                                    ),
-
-                                    //Text("anajndj"),
-                                    Positioned(
-                                      top: 0,
-                                      bottom: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: Container(
-                                        color: Colors.black.withOpacity(0.4),
-                                        // height: 100,
+                              InkWell(
+                                onTap: () {
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => BookScreen()));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AllBooksCategoriesScreen()));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Image.network(
+                                        "https://www.writersdigest.com/.image/t_share/MTcxMDY1ODEzNjY3MzU3OTU3/image-placeholder-title.jpg",
+                                        //fit: BoxFit.cover,
                                       ),
-                                    ),
-                                    Text(
-                                      "Policy",
-                                      //textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
+                              
+                                      //Text("anajndj"),
+                                      Positioned(
+                                        top: 0,
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        child: Container(
+                                          color: Colors.black.withOpacity(0.4),
+                                          // height: 100,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      Text(
+                                        "Policy",
+                                        //textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               InkWell(
                                 onTap: () {
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => BookScreen()));
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => BookScreen()));
+                                          builder: (context) =>
+                                              AllBooksCategoriesScreen(
+                                               
+                                              )));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(10),

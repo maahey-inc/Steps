@@ -495,7 +495,9 @@ class _BookScreenState extends State<BookScreen> {
   Future sendDataToFirebase() async {
     //! Spliiting Data fetched from Firebase
     if (readUid != null) {
-      splitReadTimeData();
+      if (mounted) {
+        splitReadTimeData();
+      }
     }
 
     //! Display default date Only

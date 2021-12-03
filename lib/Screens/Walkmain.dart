@@ -1013,7 +1013,6 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
   // ignore: missing_return
   Future<DocumentSnapshot> fetchWeekDataFromFirebase() async {
     final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
-
     await _fireStore.collection("MondayData").get().then((querySnapshot) {
       for (var result in querySnapshot.docs) {
         if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
@@ -1029,36 +1028,43 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
         }
       }
     });
+    if(mounted){
     await _fireStore.collection("TuesdayData").get().then((querySnapshot) {
-      for (var result in querySnapshot.docs) {
-        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-          Provider.of<Homeprovider>(context, listen: false)
-              .tuesdayStepsValue(result.data()['Steps']);
-          tuesdaySteps = result.data()['Steps'];
-          tuesdayReadTime = result.data()['ReadTime'];
-          tuesdayStartDateDay = result.data()['StartDateDay'];
-          tuesdayEndDateDay = result.data()['EndDateDay'];
-          tuesdayStartDateWeek = result.data()['StartDateWeek'];
-          tuesdayEndDateWeek = result.data()['EndDateWeek'];
-          tuesdayUid = result.data()['Uid'];
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            Provider.of<Homeprovider>(context, listen: false)
+                .tuesdayStepsValue(result.data()['Steps']);
+            tuesdaySteps = result.data()['Steps'];
+            tuesdayReadTime = result.data()['ReadTime'];
+            tuesdayStartDateDay = result.data()['StartDateDay'];
+            tuesdayEndDateDay = result.data()['EndDateDay'];
+            tuesdayStartDateWeek = result.data()['StartDateWeek'];
+            tuesdayEndDateWeek = result.data()['EndDateWeek'];
+            tuesdayUid = result.data()['Uid'];
+          }
         }
-      }
-    });
-    await _fireStore.collection("WednesdayData").get().then((querySnapshot) {
-      for (var result in querySnapshot.docs) {
-        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-          Provider.of<Homeprovider>(context, listen: false)
-              .wednesdayStepsValue(result.data()['Steps']);
-          wednesdaySteps = result.data()['Steps'];
-          wednesdayReadTime = result.data()['ReadTime'];
-          wednesdayStartDateDay = result.data()['StartDateDay'];
-          wednesdayEndDateDay = result.data()['EndDateDay'];
-          wednesdayStartDateWeek = result.data()['StartDateWeek'];
-          wednesdayEndDateWeek = result.data()['EndDateWeek'];
-          wednesdayUid = result.data()['Uid'];
+      });
+    }
+
+    if(mounted){
+ await _fireStore.collection("WednesdayData").get().then((querySnapshot) {
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            Provider.of<Homeprovider>(context, listen: false)
+                .wednesdayStepsValue(result.data()['Steps']);
+            wednesdaySteps = result.data()['Steps'];
+            wednesdayReadTime = result.data()['ReadTime'];
+            wednesdayStartDateDay = result.data()['StartDateDay'];
+            wednesdayEndDateDay = result.data()['EndDateDay'];
+            wednesdayStartDateWeek = result.data()['StartDateWeek'];
+            wednesdayEndDateWeek = result.data()['EndDateWeek'];
+            wednesdayUid = result.data()['Uid'];
+          }
         }
-      }
-    });
+      });
+    }
+   
+    if(mounted){
     await _fireStore.collection("ThursdayData").get().then((querySnapshot) {
       for (var result in querySnapshot.docs) {
         if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
@@ -1074,51 +1080,59 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
         }
       }
     });
+    }
+if(mounted){
     await _fireStore.collection("FridayData").get().then((querySnapshot) {
-      for (var result in querySnapshot.docs) {
-        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-          Provider.of<Homeprovider>(context, listen: false)
-              .fridayStepsValue(result.data()['Steps']);
-          fridaySteps = result.data()['Steps'];
-          fridayReadTime = result.data()['ReadTime'];
-          fridayStartDateDay = result.data()['StartDateDay'];
-          fridayEndDateDay = result.data()['EndDateDay'];
-          fridayStartDateWeek = result.data()['StartDateWeek'];
-          fridayEndDateWeek = result.data()['EndDateWeek'];
-          fridayUid = result.data()['Uid'];
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            Provider.of<Homeprovider>(context, listen: false)
+                .fridayStepsValue(result.data()['Steps']);
+            fridaySteps = result.data()['Steps'];
+            fridayReadTime = result.data()['ReadTime'];
+            fridayStartDateDay = result.data()['StartDateDay'];
+            fridayEndDateDay = result.data()['EndDateDay'];
+            fridayStartDateWeek = result.data()['StartDateWeek'];
+            fridayEndDateWeek = result.data()['EndDateWeek'];
+            fridayUid = result.data()['Uid'];
+          }
         }
-      }
-    });
+      });
+}
+if(mounted){
     await _fireStore.collection("SaturdayData").get().then((querySnapshot) {
-      for (var result in querySnapshot.docs) {
-        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-          Provider.of<Homeprovider>(context, listen: false)
-              .saturdayStepsValue(result.data()['Steps']);
-          saturdaySteps = result.data()['Steps'];
-          saturdayReadTime = result.data()['ReadTime'];
-          saturdayStartDateDay = result.data()['StartDateDay'];
-          saturdayEndDateDay = result.data()['EndDateDay'];
-          saturdayStartDateWeek = result.data()['StartDateWeek'];
-          saturdayEndDateWeek = result.data()['EndDateWeek'];
-          saturdayUid = result.data()['Uid'];
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            Provider.of<Homeprovider>(context, listen: false)
+                .saturdayStepsValue(result.data()['Steps']);
+            saturdaySteps = result.data()['Steps'];
+            saturdayReadTime = result.data()['ReadTime'];
+            saturdayStartDateDay = result.data()['StartDateDay'];
+            saturdayEndDateDay = result.data()['EndDateDay'];
+            saturdayStartDateWeek = result.data()['StartDateWeek'];
+            saturdayEndDateWeek = result.data()['EndDateWeek'];
+            saturdayUid = result.data()['Uid'];
+          }
         }
-      }
-    });
+      });
+}
+if (mounted){
     await _fireStore.collection("SundayData").get().then((querySnapshot) {
-      for (var result in querySnapshot.docs) {
-        if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
-          Provider.of<Homeprovider>(context, listen: false)
-              .sundayStepsValue(result.data()['Steps']);
-          sundaySteps = result.data()['Steps'];
-          sundayReadTime = result.data()['ReadTime'];
-          sundayStartDateDay = result.data()['StartDateDay'];
-          sundayEndDateDay = result.data()['EndDateDay'];
-          sundayStartDateWeek = result.data()['StartDateWeek'];
-          sundayEndDateWeek = result.data()['EndDateWeek'];
-          sundayUid = result.data()['Uid'];
+        for (var result in querySnapshot.docs) {
+          if (FirebaseAuth.instance.currentUser.uid == result.data()['Uid']) {
+            Provider.of<Homeprovider>(context, listen: false)
+                .sundayStepsValue(result.data()['Steps']);
+            sundaySteps = result.data()['Steps'];
+            sundayReadTime = result.data()['ReadTime'];
+            sundayStartDateDay = result.data()['StartDateDay'];
+            sundayEndDateDay = result.data()['EndDateDay'];
+            sundayStartDateWeek = result.data()['StartDateWeek'];
+            sundayEndDateWeek = result.data()['EndDateWeek'];
+            sundayUid = result.data()['Uid'];
+          }
         }
-      }
-    });
+      });
+}
+    
     setState(() {});
   }
 
@@ -1130,10 +1144,12 @@ class _WalkmainscreenState extends State<Walkmainscreen> {
 
   @override
   void initState() {
-    fetchData();
     // TODO: implement initState
     super.initState();
-    fetchDataFirebase();
+     if (mounted) {
+      fetchData();
+      fetchDataFirebase();
+    }
   }
 
   @override

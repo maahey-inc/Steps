@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:steps_app/Screens/AboutUsScreen.dart';
+import 'package:steps_app/Screens/AllBidsScreen.dart';
+import 'package:steps_app/Screens/AllDonationsScreen.dart';
 import 'package:steps_app/Screens/EditProfileScreen.dart';
 import 'package:steps_app/Screens/FAQScreen.dart';
 import 'package:steps_app/Screens/Mainscreen.dart';
@@ -275,8 +277,11 @@ class _MoreState extends State<More> {
                         child: Container(
                           child: InkWell(
                             onTap: () {
-                              // Navigator.push(context,
-                              //     MaterialPageRoute(builder: (context) => AllCards()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AllDonationsScreen()));
                             },
                             child: Container(
                               height: 111,
@@ -330,8 +335,10 @@ class _MoreState extends State<More> {
                         child: Container(
                           child: InkWell(
                             onTap: () {
-                              // Navigator.push(context,
-                              //     MaterialPageRoute(builder: (context) => AllCards()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AllBidsScreen()));
                             },
                             child: Container(
                               height: 111,
